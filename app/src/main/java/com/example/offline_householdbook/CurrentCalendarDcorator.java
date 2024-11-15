@@ -40,8 +40,5 @@ public class CurrentCalendarDcorator implements DayViewDecorator {
             paint.setColor(Color.GREEN); // 텍스트 색상
             paint.setTextSize(20); // 텍스트 크기
         }
-
-
-
     }
 }

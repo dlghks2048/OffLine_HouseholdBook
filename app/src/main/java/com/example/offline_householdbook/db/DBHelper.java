@@ -1,3 +1,5 @@
+package com.example.offline_householdbook.db;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
