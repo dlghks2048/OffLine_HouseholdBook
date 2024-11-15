@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -69,10 +68,6 @@ public class CalendarHome extends AppCompatActivity {
 
     private void loadRecordsForSelectedDate(String date) {
         ArrayList<FinancialRecord> records = dbHelper.selectFinancialRecordsByDate(date);
-        dbHelper.updateSettingPassword("");
-        dbHelper.updateSettingBalance(0);
-        String pass = dbHelper.selectSettingPassword();
-        Toast.makeText(getApplicationContext(), pass, Toast.LENGTH_SHORT).show();
         Log.d("CalendarHome", "Selected Date: " + date + " -> Records: " + records.size());
 
         int totalAmount = 0;
