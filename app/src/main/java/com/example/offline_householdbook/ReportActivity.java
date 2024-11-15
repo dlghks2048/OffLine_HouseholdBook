@@ -13,6 +13,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
@@ -65,17 +67,18 @@ public class ReportActivity extends AppCompatActivity {
         entries.add(new Entry(24f, 4300f)); // 24일 차 지출 4300원
         entries.add(new Entry(25f, 6000f)); // 25일 차 지출 6000원
 
-        // LineDataSet 만들기 (데이터 세트)
+        // LineDataSet 만들기 (데이터 세트) - 라벨을 빈 문자열로 설정
         LineDataSet dataSet = new LineDataSet(entries, "");
 
         // 값 표시 안 하도록 설정
         dataSet.setDrawValues(false);
 
-        // LineData 생성
-        LineData lineData = new LineData(dataSet);
-
         // 그래프의 라벨 표시 제거
         dataSet.setDrawIcons(false);   // 아이콘 (그래프 색상) 제거
+
+
+        // LineData 생성
+        LineData lineData = new LineData(dataSet);
 
         // 그래프에 데이터 적용
         lineChart.setData(lineData);
@@ -94,6 +97,17 @@ public class ReportActivity extends AppCompatActivity {
                 return "";
             }
         });
+
+        // Y축 그리드 선 숨기기
+        YAxis leftAxis = lineChart.getAxisLeft();
+        leftAxis.setDrawGridLines(false);  // Y축 그리드 선 숨기기
+
+        // X축 그리드 선 숨기기
+        xAxis.setDrawGridLines(false);  // X축 그리드 선 숨기기
+
+        // 범례 설정을 직접 없애기
+        Legend legend = lineChart.getLegend();
+        legend.setEnabled(false);  // 범례 전체를 비활성화
 
         // 그래프 업데이트
         lineChart.invalidate();
