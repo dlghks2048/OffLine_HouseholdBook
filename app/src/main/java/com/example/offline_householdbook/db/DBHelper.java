@@ -34,8 +34,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "HouseholdBook.db";
     private static final int DATABASE_VERSION = 1;
     // Field
-    private SQLiteDatabase writeDb;
-    private SQLiteDatabase readDb;
+    private SQLiteDatabase writeDb; // 쓰기 DB
+    private SQLiteDatabase readDb;  // 읽기 DB
     // Constructor
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -87,6 +87,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
     }
+
 
     // 카테고리 이름으로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
