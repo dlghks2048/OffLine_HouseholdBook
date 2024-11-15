@@ -2,14 +2,20 @@ package com.example.offline_householdbook;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.widget.ArrayAdapter;
 
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
@@ -55,6 +61,9 @@ public class CalendarHome extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         textView = findViewById(R.id.res_txt); // TextView 초기화
+
+        // 이미지 버튼 클릭 리스너 설정
+        findViewById(R.id.imageView_Insert).setOnClickListener(v -> showBottomSheetDialog());
     }
 
     private void loadRecordsForSelectedDate(String date) {
@@ -81,5 +90,42 @@ public class CalendarHome extends AppCompatActivity {
 
         // 어댑터 데이터 업데이트
         adapter.updateData(records);
+    }
+
+    // BottomSheetDialog 띄우는 메서드
+    private void showBottomSheetDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.calendar_bottom_sheet, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        Spinner spinner = bottomSheetView.findViewById(R.id.CategorySpin);
+
+        // ArrayAdapter 생성 및 Spinner에 연결
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_items, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // 버튼 클릭 리스너 설정 (옵션)
+        Button btnAction1 = bottomSheetView.findViewById(R.id.bottomBtn);
+        btnAction1.setOnClickListener(v -> {
+            // 액션 1 처리
+            bottomSheetDialog.dismiss(); // 바텀 시트 닫기
+        });
+        bottomSheetDialog.show();
+    }
+
+    public void saveRecordForSelectedDate(String date, String categoryName,int amount, String memo){
+        FinancialRecord record= new FinancialRecord(date, categoryName,amount,memo);
+        dbHelper.insertFinancialRecord(record);
+    }
+
+    public void updateRecordForSelectedDate(int id,  String date, String categoryName,int amount, String memo) {
+        FinancialRecord record= new FinancialRecord(date, categoryName,amount,memo);
+        dbHelper.updateFinancialRecord(id, record);
+    }
+
+    public void deleteRecordForSelectedDate(int id){
+        dbHelper.deleteFinancialRecord(id);
     }
 }
