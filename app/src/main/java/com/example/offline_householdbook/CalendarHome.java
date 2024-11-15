@@ -1,9 +1,9 @@
 package com.example.offline_householdbook;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,12 +41,12 @@ public class CalendarHome extends AppCompatActivity {
         DBHelper db = new DBHelper(getApplicationContext());
         // 메서드 이름은 sql문+테이블이름(+~)
         // insertFinancialRecord는 FinancialRecord객체를 생성하여 전달하면 됨
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "외식", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "문구", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "교통", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "취미", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "게임", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
+//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "외식", 10000, "메모"));
+//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "문구", 10000, "메모"));
+//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "교통", 10000, "메모"));
+//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "취미", 10000, "메모"));
+//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "게임", 10000, "메모"));
+//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
 
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = findViewById(R.id.recyclerView);
@@ -59,6 +59,7 @@ public class CalendarHome extends AppCompatActivity {
 
     private void loadRecordsForSelectedDate(String date) {
         ArrayList<FinancialRecord> records = dbHelper.selectFinancialRecordsByDate(date);
+
         Log.d("CalendarHome", "Selected Date: " + date + " -> Records: " + records.size());
 
         int totalAmount = 0;

@@ -70,9 +70,11 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void close() {
+    @Override
+    protected void finalize() throws Throwable {
         readDb.close();
         writeDb.close();
+        super.finalize();
     }
 
     // financial_record 테이블에 대한 인터페이스
@@ -158,19 +160,74 @@ public class DBHelper extends SQLiteOpenHelper {
         return records;
     }
     
-    // 업데이트
+    // 업데이트, _id 검사하지 않음
     public void updateFinancialRecord(FinancialRecord before, FinancialRecord after) {
+        // 새로운 values
+        ContentValues values = new ContentValues();
+        values.put(FinancialRecordTable.COLUMN_NAME_DATE, after.getDate());
+        values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, after.getCategoryName());
+        values.put(FinancialRecordTable.COLUMN_NAME_AMOUNT, after.getAmount());
+        values.put(FinancialRecordTable.COLUMN_NAME_MEMO, after.getMemo());
 
+        // 업데이트 쿼리문의 where절
+        String selection = FinancialRecordTable.COLUMN_NAME_DATE + "=? and " +
+                FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME + "=? and "+
+                FinancialRecordTable.COLUMN_NAME_AMOUNT + "=? and " +
+                FinancialRecordTable.COLUMN_NAME_MEMO + "=?";
+        // where절의 인수
+        String[] selectionArgs = {before.getDate(), before.getCategoryName(), Integer.toString(before.getAmount()), before.getMemo()};
 
+        int count = writeDb.update(
+                FinancialRecordTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
+    }
+    // _id로 조회하여 업데이트
+    public void updateFinancialRecord(int beforeId, FinancialRecord after) {
+        // 새로운 values
+        ContentValues values = new ContentValues();
+        values.put(FinancialRecordTable.COLUMN_NAME_DATE, after.getDate());
+        values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, after.getCategoryName());
+        values.put(FinancialRecordTable.COLUMN_NAME_AMOUNT, after.getAmount());
+        values.put(FinancialRecordTable.COLUMN_NAME_MEMO, after.getMemo());
+
+        // 업데이트 쿼리문의 where절
+        String selection = FinancialRecordTable._ID + "=?";
+        // where절의 인수
+        String[] selectionArgs = {Integer.toString(beforeId)};
+
+        int count = writeDb.update(
+                FinancialRecordTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
     }
 
-    // 삭제
+    // 삭제, _id로 조회하지 않음
     public void deleteFinancialRecord(FinancialRecord rhs) {
-        String selection = FinancialRecordTable._ID + " LIKE ?";
-    }
-    public void deleteFinancialRecord(int _id) {
+        // 삭제 쿼리문의 where절
+        String selection = FinancialRecordTable.COLUMN_NAME_DATE + "=? and " +
+                FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME + "=? and "+
+                FinancialRecordTable.COLUMN_NAME_AMOUNT + "=? and " +
+                FinancialRecordTable.COLUMN_NAME_MEMO + "=?";
+        // where절의 인수
+        String[] selectionArgs = {rhs.getDate(), rhs.getCategoryName(), Integer.toString(rhs.getAmount()), rhs.getMemo()};
 
+        int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
     }
+    // id 값으로 삭제
+    public void deleteFinancialRecord(int _id) {
+        // 삭제 쿼리문의 where절
+        String selection = FinancialRecordTable._ID + "=?";
+        // where절의 인수
+        String[] selectionArgs = {Integer.toString(_id)};
+
+        int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
+    }
+
 
 
 }
