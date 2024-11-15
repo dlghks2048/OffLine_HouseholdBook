@@ -59,6 +59,9 @@ public class CalendarHome extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         textView = findViewById(R.id.res_txt); // TextView 초기화
+
+        // 이미지 버튼 클릭 리스너 설정
+        findViewById(R.id.imageView_Insert).setOnClickListener(v -> showBottomSheetDialog());
     }
 
     private void loadRecordsForSelectedDate(String date) {
