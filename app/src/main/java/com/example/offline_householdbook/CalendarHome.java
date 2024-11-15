@@ -2,6 +2,9 @@ package com.example.offline_householdbook;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
@@ -81,5 +85,20 @@ public class CalendarHome extends AppCompatActivity {
 
         // 어댑터 데이터 업데이트
         adapter.updateData(records);
+    }
+
+    // BottomSheetDialog 띄우는 메서드
+    private void showBottomSheetDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.calendar_bottom_sheet, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // 버튼 클릭 리스너 설정 (옵션)
+        Button btnAction1 = bottomSheetView.findViewById(R.id.bottomBtn);
+        btnAction1.setOnClickListener(v -> {
+            // 액션 1 처리
+            bottomSheetDialog.dismiss(); // 바텀 시트 닫기
+        });
+        bottomSheetDialog.show();
     }
 }
