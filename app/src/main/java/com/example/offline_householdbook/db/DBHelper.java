@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -65,16 +66,23 @@ public class DBHelper extends SQLiteOpenHelper {
     
     // financial_record 테이블에 대한 인터페이스
     // 삽입
-    public long insertFinancialRecord(FinancialRecord record) {
-        SQLiteDatabase db = getWritableDatabase();
+    public void insertFinancialRecord(FinancialRecord record) {
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FinancialRecordTable.COLUMN_NAME_DATE, record.getDate());
         values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, record.getCategoryName());
         values.put(FinancialRecordTable.COLUMN_NAME_AMOUNT, record.getAmount());
         values.put(FinancialRecordTable.COLUMN_NAME_MEMO, record.getMemo());
 
-        return db.insert(FinancialRecordTable.TABLE_NAME, null, values);
+        long result = db.insert(FinancialRecordTable.TABLE_NAME, null, values);
+        if (result == -1) {
+            Log.e("DBHelper", "Insert failed");
+        } else {
+            Log.d("DBHelper", "Insert successful");
+        }
+        db.close();
     }
+
 
     public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
         SQLiteDatabase db = getReadableDatabase();
@@ -101,9 +109,10 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<FinancialRecord> records = new ArrayList<>();
 
+        // 날짜를 쿼리할 때 작은따옴표를 제대로 넣어야 함
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
                 " WHERE " + FinancialRecordTable.COLUMN_NAME_DATE + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{date});
+        Cursor cursor = db.rawQuery(query, new String[]{date});  // 날짜 파라미터로 전달
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
@@ -144,4 +153,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     }
+
+
 }

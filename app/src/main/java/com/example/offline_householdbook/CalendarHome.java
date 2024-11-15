@@ -1,6 +1,7 @@
 package com.example.offline_householdbook;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +27,7 @@ public class CalendarHome extends AppCompatActivity {
         setContentView(R.layout.activity_calendar_home);
 
         // DBHelper 초기화
-        dbHelper = new DBHelper(this);
+        dbHelper = new DBHelper(getApplicationContext());
 
         // CalendarView 초기화 및 날짜 선택 리스너 설정
         calendarView = findViewById(R.id.calendarView);
@@ -34,6 +35,16 @@ public class CalendarHome extends AppCompatActivity {
             String selectedDate = date.getDate().toString();  // 날짜를 "yyyy-MM-dd" 형식으로 변환
             loadRecordsForSelectedDate(selectedDate);
         });
+        // DBHelper 객체 생성, 생성자 인수는 현재 컨텍스트
+        DBHelper db = new DBHelper(getApplicationContext());
+        // 메서드 이름은 sql문+테이블이름(+~)
+        // insertFinancialRecord는 FinancialRecord객체를 생성하여 전달하면 됨
+        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "외식", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "문구", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "교통", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "취미", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "게임", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
 
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = findViewById(R.id.recyclerView);
@@ -45,6 +56,8 @@ public class CalendarHome extends AppCompatActivity {
     // 선택한 날짜의 데이터를 로드하여 RecyclerView에 표시하는 메서드
     private void loadRecordsForSelectedDate(String date) {
         ArrayList<FinancialRecord> records = dbHelper.selectFinancialRecordsByDate(date);
+        Log.d("CalendarHome", "Selected Date: " + date + " -> Records: " + records.size());
         adapter.updateData(records); // 어댑터 데이터 업데이트
     }
+
 }
