@@ -1,5 +1,6 @@
 package com.example.offline_householdbook;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +32,11 @@ public class CalendarHome extends AppCompatActivity {
         // CalendarView 초기화 및 날짜 선택 리스너 설정
         calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
-            String selectedDate = date.getDate().toString();  // 날짜를 "yyyy-MM-dd" 형식으로 변환
+            int year = date.getYear();
+            int month = date.getMonth() + 1;  // Calendar.MONTH는 0부터 시작하므로 1을 더해줍니다.
+            int day = date.getDay();
+
+            String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
             loadRecordsForSelectedDate(selectedDate);
         });
 
