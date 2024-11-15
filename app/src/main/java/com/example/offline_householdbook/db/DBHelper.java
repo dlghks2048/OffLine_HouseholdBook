@@ -34,11 +34,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "HouseholdBook.db";
     private static final int DATABASE_VERSION = 1;
     // Field
-    //private SQLiteDatabase writeDb;
-    //private SQLiteDatabase readDb;
+    private SQLiteDatabase writeDb;
+    private SQLiteDatabase readDb;
     // Constructor
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        writeDb = getWritableDatabase();
+        readDb = getReadableDatabase();
     }
 
     @Override
@@ -78,7 +80,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(FinancialRecordTable.COLUMN_NAME_AMOUNT, record.getAmount());
         values.put(FinancialRecordTable.COLUMN_NAME_MEMO, record.getMemo());
 
-        long result = db.insert(FinancialRecordTable.TABLE_NAME, null, values);
+        long result = writeDb.insert(FinancialRecordTable.TABLE_NAME, null, values);
         if (result == -1) {
             Log.e("DBHelper", "Insert failed");
         } else {
@@ -94,7 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
                 " WHERE " + FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{categoryName});
+        Cursor cursor = readDb.rawQuery(query, new String[]{categoryName});
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
@@ -116,7 +118,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // 날짜를 쿼리할 때 작은따옴표를 제대로 넣어야 함
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
                 " WHERE " + FinancialRecordTable.COLUMN_NAME_DATE + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{date});  // 날짜 파라미터로 전달
+        Cursor cursor = readDb.rawQuery(query, new String[]{date});  // 날짜 파라미터로 전달
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
@@ -137,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
                 " WHERE " + FinancialRecordTable.COLUMN_NAME_DATE + " BETWEEN ? and ?";
-        Cursor cursor = db.rawQuery(query, new String[]{startDate, endDate});
+        Cursor cursor = readDb.rawQuery(query, new String[]{startDate, endDate});
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
