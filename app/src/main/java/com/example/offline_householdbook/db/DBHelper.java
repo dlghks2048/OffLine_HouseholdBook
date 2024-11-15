@@ -89,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+
     // 카테고리 이름으로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
         SQLiteDatabase db = getReadableDatabase();
@@ -156,7 +157,6 @@ public class DBHelper extends SQLiteOpenHelper {
     
     // 업데이트
     public void updateFinancialRecord(FinancialRecord before, FinancialRecord after) {
-
 
 
     }
