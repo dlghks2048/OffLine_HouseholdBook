@@ -73,6 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // financial_record 테이블에 대한 인터페이스
     // 삽입
     public void insertFinancialRecord(FinancialRecord record) {
+        writeDb = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FinancialRecordTable.COLUMN_NAME_DATE, record.getDate());
         values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, record.getCategoryName());
@@ -153,7 +154,6 @@ public class DBHelper extends SQLiteOpenHelper {
     
     // 업데이트
     public void updateFinancialRecord(FinancialRecord before, FinancialRecord after) {
-
 
 
     }
