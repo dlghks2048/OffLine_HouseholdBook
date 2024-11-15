@@ -2,36 +2,37 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarHome"
-    android:orientation="vertical">
+    tools:context=".CalendarHome">
 
+    <!-- MaterialCalendarView for displaying the calendar -->
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/calendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/calendarView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHeight_percent="0.5"
         app:mcv_firstDayOfWeek="sunday"
         app:mcv_selectionMode="single"
-        app:mcv_showOtherDates="none"
-        />
+        app:mcv_showOtherDates="none" />
 
-    <!-- 커스터마이징 화면 추가 (예: 버튼, 텍스트 등) -->
-    <FrameLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <!-- RecyclerView for displaying financial records -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="413dp"
+        android:layout_height="369dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.3"> <!-- 30% 높이 -->
-
-        <!-- 여기에 다른 UI 요소들 배치 가능 -->
-        <TextView
-            android:id="@+id/custom_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="여기에 추가 텍스트를 표시" />
-    </FrameLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendarView"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_financial_record" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
