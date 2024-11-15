@@ -19,6 +19,7 @@
 
     <!-- 커스터마이징 화면 추가 (예: 버튼, 텍스트 등) -->
     <FrameLayout
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
