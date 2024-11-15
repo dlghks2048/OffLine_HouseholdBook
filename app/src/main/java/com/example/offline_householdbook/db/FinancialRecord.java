@@ -8,14 +8,25 @@ public class FinancialRecord {
         this.amount = amount;
         this.memo = memo;
     }
+    // _id 있는 버전
+    public FinancialRecord(int _id, String date, String categoryName, int amount, String memo) {
+        this._id = _id;
+        this.date = date;
+        this.categoryName = categoryName;
+        this.amount = amount;
+        this.memo = memo;
+    }
 
     // Field
+    private int _id;
     private String date;    // 날짜
     private String categoryName;
     private int amount;
     private String memo;
 
     // Getter
+    public int get_id() { return _id; }
+
     public String getDate() {
         return date;
     }

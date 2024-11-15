@@ -69,11 +69,17 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(sql);
         onCreate(sqLiteDatabase);
     }
-    
+
+    @Override
+    protected void finalize() throws Throwable {
+        readDb.close();
+        writeDb.close();
+        super.finalize();
+    }
+
     // financial_record 테이블에 대한 인터페이스
     // 삽입
     public void insertFinancialRecord(FinancialRecord record) {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FinancialRecordTable.COLUMN_NAME_DATE, record.getDate());
         values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, record.getCategoryName());
@@ -86,13 +92,11 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             Log.d("DBHelper", "Insert successful");
         }
-
     }
 
 
     // 카테고리 이름으로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
-        SQLiteDatabase db = getReadableDatabase();
         ArrayList<FinancialRecord> records = new ArrayList<>();
 
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
@@ -101,6 +105,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable._ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
@@ -113,7 +118,6 @@ public class DBHelper extends SQLiteOpenHelper {
     
     // 단일 Date로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByDate(String date) {
-        SQLiteDatabase db = getReadableDatabase();
         ArrayList<FinancialRecord> records = new ArrayList<>();
 
         // 날짜를 쿼리할 때 작은따옴표를 제대로 넣어야 함
@@ -123,6 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable._ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
@@ -135,7 +140,6 @@ public class DBHelper extends SQLiteOpenHelper {
     
     // 범위 Date로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByDate(String startDate, String endDate) {
-        SQLiteDatabase db = getReadableDatabase();
         ArrayList<FinancialRecord> records = new ArrayList<>();
 
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
@@ -144,6 +148,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             records.add(new FinancialRecord(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable._ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
@@ -158,6 +163,11 @@ public class DBHelper extends SQLiteOpenHelper {
     // 업데이트
     public void updateFinancialRecord(FinancialRecord before, FinancialRecord after) {
 
+
+    }
+
+    // 삭제
+    public void deleteFinancialRecord(FinancialRecord rhs) {
 
     }
 
