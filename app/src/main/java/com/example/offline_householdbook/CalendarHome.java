@@ -104,4 +104,18 @@ public class CalendarHome extends AppCompatActivity {
         });
         bottomSheetDialog.show();
     }
+
+    public void saveRecordForSelectedDate(String date, String categoryName,int amount, String memo){
+        FinancialRecord record= new FinancialRecord(date, categoryName,amount,memo);
+        dbHelper.insertFinancialRecord(record);
+    }
+
+    public void updateRecordForSelectedDate(int id,  String date, String categoryName,int amount, String memo) {
+        FinancialRecord record= new FinancialRecord(date, categoryName,amount,memo);
+        dbHelper.updateFinancialRecord(id, record);
+    }
+
+    public void deleteRecordForSelectedDate(int id){
+        dbHelper.deleteFinancialRecord(id);
+    }
 }
