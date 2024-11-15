@@ -239,20 +239,90 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /* -------------- settings 테이블에 대한 인터페이스 -------------- */
-    // 삽입
-    public void insertSetting(FinancialRecord record) {
-        ContentValues values = new ContentValues();
-        values.put(FinancialRecordTable.COLUMN_NAME_DATE, record.getDate());
-        values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, record.getCategoryName());
-        values.put(FinancialRecordTable.COLUMN_NAME_AMOUNT, record.getAmount());
-        values.put(FinancialRecordTable.COLUMN_NAME_MEMO, record.getMemo());
+    // 비밀번호 조회
+    public String selectSettingPassword() {
+        String password = "";
+        String query = "SELECT * FROM " + SettingTable.TABLE_NAME;
+        Cursor cursor = readDb.rawQuery(query, null);
 
-        long result = writeDb.insert(FinancialRecordTable.TABLE_NAME, null, values);
-        if (result == -1) {
-            Log.e("DBHelper", "Insert failed");
-        } else {
-            Log.d("DBHelper", "Insert successful");
-        }
+        while (cursor.moveToNext())
+            password = cursor.getString(cursor.getColumnIndexOrThrow(SettingTable.COLUMN_NAME_PASSWORD));
+
+        cursor.close();
+
+        return password;
+    }
+    // 잔액 조회
+    public int selectSettingBalance() {
+        int balance = 0;
+        String query = "SELECT * FROM " + SettingTable.TABLE_NAME;
+        Cursor cursor = readDb.rawQuery(query, null);
+
+        while (cursor.moveToNext())
+            balance = cursor.getInt(cursor.getColumnIndexOrThrow(SettingTable.COLUMN_NAME_BALANCE));
+
+        cursor.close();
+
+        return balance;
+    }
+    // 다크 모드 조회
+    public int selectSettingDarkMode() {
+        int isdarkMode = 0;
+        String query = "SELECT * FROM " + SettingTable.TABLE_NAME;
+        Cursor cursor = readDb.rawQuery(query, null);
+
+        while (cursor.moveToNext())
+            isdarkMode = cursor.getInt(cursor.getColumnIndexOrThrow(SettingTable.COLUMN_NAME_DARK_MODE));
+
+        cursor.close();
+
+        return isdarkMode;
+    }
+    // 비밀번호 수정
+    public void updateSettingPassword(String password) {
+        ContentValues values = new ContentValues();
+        values.put(SettingTable.COLUMN_NAME_PASSWORD, password);
+
+        // 업데이트 쿼리문의 where절
+        String selection = SettingTable._ID + "=1";
+
+        int count = writeDb.update(
+                SettingTable.TABLE_NAME,
+                values,
+                selection,
+                null
+        );
+    }
+
+    // 잔액 수정
+    public void updateSettingBalance(int balance) {
+        ContentValues values = new ContentValues();
+        values.put(SettingTable.COLUMN_NAME_BALANCE, balance);
+
+        // 업데이트 쿼리문의 where절
+        String selection = SettingTable._ID + "=1";
+
+        int count = writeDb.update(
+                SettingTable.TABLE_NAME,
+                values,
+                selection,
+                null
+        );
+    }
+    // 테마(다크모드) 수정
+    public void updateSettingDarkMode(int isDarkMode) {
+        ContentValues values = new ContentValues();
+        values.put(SettingTable.COLUMN_NAME_DARK_MODE, isDarkMode);
+
+        // 업데이트 쿼리문의 where절
+        String selection = SettingTable._ID + "=1";
+
+        int count = writeDb.update(
+                SettingTable.TABLE_NAME,
+                values,
+                selection,
+                null
+        );
     }
 
 }
