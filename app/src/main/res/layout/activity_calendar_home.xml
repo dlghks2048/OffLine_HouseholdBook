@@ -26,12 +26,9 @@
         app:layout_constraintHeight_percent="0.3"> <!-- 30% 높이 -->
 
         <!-- 여기에 다른 UI 요소들 배치 가능 -->
-        <TextView
-            android:id="@+id/custom_text"
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="여기에 추가 텍스트를 표시" />
+            android:layout_height="match_parent" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
