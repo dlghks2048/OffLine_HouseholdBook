@@ -87,7 +87,7 @@ public class ReportActivity extends AppCompatActivity {
         rightAxis.setEnabled(true);  // 오른쪽 Y축 활성화
 
         // 그래프 제목을 상단 중앙에 표시
-        lineChart.getDescription().setText("월간 지출 그래프");
+        lineChart.getDescription().setText("월간 지출");
         lineChart.getDescription().setTextSize(12f);
         lineChart.getDescription().setPosition(lineChart.getWidth() / 2f, 50);  // 상단 중앙에 제목 배치
 
@@ -138,7 +138,7 @@ public class ReportActivity extends AppCompatActivity {
         rightAxis.setEnabled(true);  // 오른쪽 Y축 활성화
 
         // 그래프 제목을 상단 중앙에 표시
-        lineChart.getDescription().setText("주간 지출 그래프");
+        lineChart.getDescription().setText("주간 지출");
         lineChart.getDescription().setTextSize(12f);
         lineChart.getDescription().setPosition(lineChart.getWidth() / 2f, 50);  // 상단 중앙에 제목 배치
 
