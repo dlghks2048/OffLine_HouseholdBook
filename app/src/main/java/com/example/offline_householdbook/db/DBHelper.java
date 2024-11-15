@@ -62,7 +62,9 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(sql);
         onCreate(sqLiteDatabase);
     }
-
+    
+    // financial_record 테이블에 대한 인터페이스
+    // 삽입
     public long insertFinancialRecord(FinancialRecord record) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -74,6 +76,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.insert(FinancialRecordTable.TABLE_NAME, null, values);
     }
 
+    public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<FinancialRecord> records = new ArrayList<>();
+
+        String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
+                " WHERE " + FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{categoryName});
+
+        while (cursor.moveToNext()) {
+            records.add(new FinancialRecord(
+                    cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_MEMO))
+            ));
+        }
+        cursor.close();
+        return records;
+    }
+    
+    // 단일 Date로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByDate(String date) {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<FinancialRecord> records = new ArrayList<>();
@@ -93,7 +116,8 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         return records;
     }
-
+    
+    // 범위 Date로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByDate(String startDate, String endDate) {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<FinancialRecord> records = new ArrayList<>();
@@ -112,5 +136,12 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return records;
+    }
+    
+    // 업데이트
+    public void updateFinancialRecord(FinancialRecord before, FinancialRecord after) {
+        SQLiteDatabase db = getReadableDatabase();
+
+
     }
 }
