@@ -1,3 +1,5 @@
+package com.example.offline_householdbook.db;
+
 public class FinancialRecord {
     // Construct
     public FinancialRecord(String date, String categoryName, int amount, String memo) {
