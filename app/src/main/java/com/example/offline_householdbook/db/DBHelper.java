@@ -56,9 +56,21 @@ public class DBHelper extends SQLiteOpenHelper {
         // setting 테이블 생성
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SettingTable.TABLE_NAME +" (" +
                 SettingTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SettingTable.COLUMN_NAME_PASSWORD + " TEXT," +
-                SettingTable.COLUMN_NAME_BALANCE + " INTEGER," +
+                SettingTable.COLUMN_NAME_PASSWORD + " TEXT, " +
+                SettingTable.COLUMN_NAME_BALANCE + " INTEGER, " +
                 SettingTable.COLUMN_NAME_DARK_MODE + " INTEGER)");
+
+        String query = "SELECT * FROM " + SettingTable.TABLE_NAME;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if(cursor.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put(SettingTable.COLUMN_NAME_PASSWORD, "");
+            values.put(SettingTable.COLUMN_NAME_BALANCE, 0);
+            values.put(SettingTable.COLUMN_NAME_DARK_MODE, 0);
+
+            long result = sqLiteDatabase.insert(SettingTable.TABLE_NAME, null, values);
+        }
+
     }
 
     @Override
@@ -77,7 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
         super.finalize();
     }
 
-    // financial_record 테이블에 대한 인터페이스
+    /* -------------- financial_record 테이블에 대한 인터페이스 -------------- */
     // 삽입
     public void insertFinancialRecord(FinancialRecord record) {
         ContentValues values = new ContentValues();
@@ -93,8 +105,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.d("DBHelper", "Insert successful");
         }
     }
-
-
     // 카테고리 이름으로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
         ArrayList<FinancialRecord> records = new ArrayList<>();
@@ -218,7 +228,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
     }
-    // id 값으로 삭제
+    // _id 값으로 삭제
     public void deleteFinancialRecord(int _id) {
         // 삭제 쿼리문의 where절
         String selection = FinancialRecordTable._ID + "=?";
@@ -228,6 +238,21 @@ public class DBHelper extends SQLiteOpenHelper {
         int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
     }
 
+    /* -------------- settings 테이블에 대한 인터페이스 -------------- */
+    // 삽입
+    public void insertSetting(FinancialRecord record) {
+        ContentValues values = new ContentValues();
+        values.put(FinancialRecordTable.COLUMN_NAME_DATE, record.getDate());
+        values.put(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME, record.getCategoryName());
+        values.put(FinancialRecordTable.COLUMN_NAME_AMOUNT, record.getAmount());
+        values.put(FinancialRecordTable.COLUMN_NAME_MEMO, record.getMemo());
 
+        long result = writeDb.insert(FinancialRecordTable.TABLE_NAME, null, values);
+        if (result == -1) {
+            Log.e("DBHelper", "Insert failed");
+        } else {
+            Log.d("DBHelper", "Insert successful");
+        }
+    }
 
 }
