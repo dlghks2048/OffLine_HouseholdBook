@@ -31,7 +31,7 @@
             android:name=".CalendarHome"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".MainHome"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
