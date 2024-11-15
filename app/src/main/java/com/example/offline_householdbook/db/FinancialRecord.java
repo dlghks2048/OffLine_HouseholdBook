@@ -31,6 +31,11 @@ public class FinancialRecord {
     public String getMemo() {
         return memo;
     }
+
+    // Method
+    public String toString() {
+        return "날짜: " + date + " 카테고리: " + categoryName + " 금액: " + amount + " 메모: " + memo;
+    }
 }
 
 
