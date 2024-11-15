@@ -66,12 +66,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor cursor;
         cursor = db.rawQuery("SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
-                "WHERE " + FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME + "=" + categoryName, null);
+                " WHERE " + FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME + " = \'" + categoryName + "\'",null);
 
-        ArrayList<FinancialRecord> res = new ArrayList<>();
-        FinancialRecord temp;
+        ArrayList<FinancialRecord> res = new ArrayList<FinancialRecord>();
         while(cursor.moveToNext()) {
-            res.add(new FinancialRecord(cursor.getString(0), cursor.getString(1), cursor.getInt(2), cursor.getString((3))));
+            res.add(new FinancialRecord(cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getString(4)));
         }
         cursor.close();
         return res;
