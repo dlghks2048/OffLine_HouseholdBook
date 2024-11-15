@@ -25,14 +25,8 @@ public class SettingActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // DBHelper 객체 생성, 생성자 인수는 현재 컨텍스트
-        DBHelper db = new DBHelper(getApplicationContext());
-        // 메서드 이름은 sql문+테이블이름(+~)
-        // insertFinancialRecord는 FinancialRecord객체를 생성하여 전달하면 됨
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "외식", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "문구", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "교통", 10000, "메모"));
-    }
+
+  }
 
 
 }
