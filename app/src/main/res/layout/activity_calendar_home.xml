@@ -22,8 +22,8 @@
     <!-- RecyclerView for displaying financial records -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="413dp"
-        android:layout_height="369dp"
+        android:layout_width="414dp"
+        android:layout_height="291dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,5 +34,14 @@
         app:layout_constraintTop_toBottomOf="@id/calendarView"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_financial_record" />
+
+    <TextView
+        android:id="@+id/res_txt"
+        android:layout_width="384dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="12dp"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="375dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
