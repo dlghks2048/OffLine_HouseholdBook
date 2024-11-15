@@ -1,115 +1,163 @@
 package com.example.offline_householdbook;
 
 import android.os.Bundle;
+import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
 
 public class ReportActivity extends AppCompatActivity {
 
+    private LineChart lineChart;  // LineChart 객체
+    private Button btnMonth, btnWeek;  // 버튼 객체
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_report);
 
-        // 시스템 바 여백 처리
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        // 버튼과 그래프 참조
+        lineChart = findViewById(R.id.lineChart);
+        btnMonth = findViewById(R.id.btn_month);
+        btnWeek = findViewById(R.id.btn_week);
+
+        // 월간 그래프 버튼 클릭 시 월간 그래프 표시
+        btnMonth.setOnClickListener(v -> {
+            showMonthlyGraph();
+            toggleButtons(true);  // 월간 버튼 비활성화
         });
 
-        // LineChart 그래프 설정
-        LineChart lineChart = findViewById(R.id.lineChart);
+        // 주간 그래프 버튼 클릭 시 주간 그래프 표시
+        btnWeek.setOnClickListener(v -> {
+            showWeeklyGraph();
+            toggleButtons(false);  // 주간 버튼 비활성화
+        });
 
-        // 1일부터 25일까지의 지출 내역 (임시 데이터)
+        // 기본적으로 월간 그래프를 먼저 표시
+        showMonthlyGraph();
+        toggleButtons(true);  // 처음에는 월간 그래프가 표시되므로 월간 버튼 비활성화
+    }
+
+    // 월간 그래프 표시
+    private void showMonthlyGraph() {
+        // 월간 지출 내역 (고정된 값)
         ArrayList<Entry> entries = new ArrayList<>();
+        float[] monthlyExpenses = {5000, 12000, 8000, 15000, 10000, 20000, 18000, 22000, 9000, 14000,
+                16000, 7000, 13000, 19000, 17000, 11000, 25000, 23000, 12000, 10000,
+                9000, 8000, 14000, 16000, 11000, 18000, 21000, 19000, 22000, 24000};
 
-        // 예시: 1일부터 25일까지의 지출 내역 (각각 날짜에 지출 금액을 추가)
-        entries.add(new Entry(1f, 5000f));  // 1일 차 지출 5000원
-        entries.add(new Entry(2f, 2000f));  // 2일 차 지출 2000원
-        entries.add(new Entry(3f, 3000f));  // 3일 차 지출 3000원
-        entries.add(new Entry(4f, 4000f));  // 4일 차 지출 4000원
-        entries.add(new Entry(5f, 2500f));  // 5일 차 지출 2500원
-        entries.add(new Entry(6f, 4500f));  // 6일 차 지출 4500원
-        entries.add(new Entry(7f, 1500f));  // 7일 차 지출 1500원
-        entries.add(new Entry(8f, 3500f));  // 8일 차 지출 3500원
-        entries.add(new Entry(9f, 4200f));  // 9일 차 지출 4200원
-        entries.add(new Entry(10f, 2200f)); // 10일 차 지출 2200원
-        entries.add(new Entry(11f, 3000f)); // 11일 차 지출 3000원
-        entries.add(new Entry(12f, 2800f)); // 12일 차 지출 2800원
-        entries.add(new Entry(13f, 5000f)); // 13일 차 지출 5000원
-        entries.add(new Entry(14f, 1000f)); // 14일 차 지출 1000원
-        entries.add(new Entry(15f, 6000f)); // 15일 차 지출 6000원
-        entries.add(new Entry(16f, 3200f)); // 16일 차 지출 3200원
-        entries.add(new Entry(17f, 5300f)); // 17일 차 지출 5300원
-        entries.add(new Entry(18f, 2300f)); // 18일 차 지출 2300원
-        entries.add(new Entry(19f, 2900f)); // 19일 차 지출 2900원
-        entries.add(new Entry(20f, 4800f)); // 20일 차 지출 4800원
-        entries.add(new Entry(21f, 3600f)); // 21일 차 지출 3600원
-        entries.add(new Entry(22f, 2400f)); // 22일 차 지출 2400원
-        entries.add(new Entry(23f, 5500f)); // 23일 차 지출 5500원
-        entries.add(new Entry(24f, 4300f)); // 24일 차 지출 4300원
-        entries.add(new Entry(25f, 6000f)); // 25일 차 지출 6000원
+        for (int i = 1; i <= monthlyExpenses.length; i++) {
+            entries.add(new Entry(i, monthlyExpenses[i - 1]));  // 고정된 지출 값 추가
+        }
 
-        // LineDataSet 만들기 (데이터 세트) - 라벨을 빈 문자열로 설정
-        LineDataSet dataSet = new LineDataSet(entries, "");
+        LineDataSet dataSet = new LineDataSet(entries, "월간 지출");
+        dataSet.setDrawValues(false);  // 데이터 값 표시 안함
+        dataSet.setDrawIcons(false);  // 아이콘 표시 안함
 
-        // 값 표시 안 하도록 설정
-        dataSet.setDrawValues(false);
-
-        // 그래프의 라벨 표시 제거
-        dataSet.setDrawIcons(false);   // 아이콘 (그래프 색상) 제거
-
-
-        // LineData 생성
         LineData lineData = new LineData(dataSet);
-
-        // 그래프에 데이터 적용
         lineChart.setData(lineData);
 
-        // X축 날짜 설정
+        // X축 날짜 대신 1일부터 30일까지 숫자 표시
         XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);  // X축을 아래에 표시
-        xAxis.setGranularity(1f);  // X축 간격을 1로 설정 (1일 단위)
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);  // X축 간격을 1로 설정
+        xAxis.setDrawGridLines(false);  // X축 그리드 선 숨김
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                // 날짜를 정수로 처리하여 X축에 표시
-                if (value >= 1 && value <= 25) {
-                    return String.valueOf((int) value);  // 1일부터 25일까지의 날짜 출력
-                }
-                return "";
+                return String.valueOf((int) value);  // 숫자 표시
             }
         });
 
-        // Y축 그리드 선 숨기기
+        // Y축 그리드 선 유지 및 왼쪽/오른쪽 Y축 가격 표시
         YAxis leftAxis = lineChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);  // Y축 그리드 선 숨기기
+        YAxis rightAxis = lineChart.getAxisRight();
+        leftAxis.setDrawGridLines(true);  // Y축 왼쪽 그리드 선 숨김
+        rightAxis.setDrawGridLines(true);  // Y축 오른쪽 그리드 선 숨김
+        rightAxis.setEnabled(true);  // 오른쪽 Y축 활성화
 
-        // X축 그리드 선 숨기기
-        xAxis.setDrawGridLines(false);  // X축 그리드 선 숨기기
+        // 그래프 제목을 상단 중앙에 표시
+        lineChart.getDescription().setText("월간 지출 그래프");
+        lineChart.getDescription().setTextSize(12f);
+        lineChart.getDescription().setPosition(lineChart.getWidth() / 2f, 50);  // 상단 중앙에 제목 배치
 
-        // 범례 설정을 직접 없애기
+        // 범례 설정 비활성화
         Legend legend = lineChart.getLegend();
-        legend.setEnabled(false);  // 범례 전체를 비활성화
+        legend.setEnabled(false);
 
         // 그래프 업데이트
         lineChart.invalidate();
+    }
+
+    // 주간 그래프 표시
+    private void showWeeklyGraph() {
+        // 주간 지출 내역 (고정된 값)
+        ArrayList<Entry> entries = new ArrayList<>();
+        float[] weeklyExpenses = {10000, 15000, 20000, 25000, 12000, 18000, 22000};
+
+        for (int i = 0; i < weeklyExpenses.length; i++) {
+            entries.add(new Entry(i, weeklyExpenses[i]));  // 고정된 지출 값 추가
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "주간 지출");
+        dataSet.setDrawValues(false);  // 데이터 값 표시 안함
+        dataSet.setDrawIcons(false);  // 아이콘 표시 안함
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+
+        // X축에 요일 표시
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);  // X축 간격을 1로 설정
+        xAxis.setDrawGridLines(false);  // X축 그리드 선 숨김
+        xAxis.setValueFormatter(new ValueFormatter() {
+            private final String[] daysOfWeek = {"월", "화", "수", "목", "금", "토", "일"};
+
+            @Override
+            public String getFormattedValue(float value) {
+                return daysOfWeek[(int) value % daysOfWeek.length];  // 요일 표시
+            }
+        });
+
+        // Y축 그리드 선 유지 및 왼쪽/오른쪽 Y축 가격 표시
+        YAxis leftAxis = lineChart.getAxisLeft();
+        YAxis rightAxis = lineChart.getAxisRight();
+        leftAxis.setDrawGridLines(true);  // Y축 왼쪽 그리드 선 숨김
+        rightAxis.setDrawGridLines(true);  // Y축 오른쪽 그리드 선 숨김
+        rightAxis.setEnabled(true);  // 오른쪽 Y축 활성화
+
+        // 그래프 제목을 상단 중앙에 표시
+        lineChart.getDescription().setText("주간 지출 그래프");
+        lineChart.getDescription().setTextSize(12f);
+        lineChart.getDescription().setPosition(lineChart.getWidth() / 2f, 50);  // 상단 중앙에 제목 배치
+
+        // 범례 설정 비활성화
+        Legend legend = lineChart.getLegend();
+        legend.setEnabled(false);
+
+        // 그래프 업데이트
+        lineChart.invalidate();
+    }
+
+    // 버튼 활성화/비활성화 설정
+    private void toggleButtons(boolean isMonthly) {
+        if (isMonthly) {
+            btnMonth.setEnabled(false);  // 월간 버튼 비활성화
+            btnWeek.setEnabled(true);    // 주간 버튼 활성화
+        } else {
+            btnMonth.setEnabled(true);   // 월간 버튼 활성화
+            btnWeek.setEnabled(false);   // 주간 버튼 비활성화
+        }
     }
 }
