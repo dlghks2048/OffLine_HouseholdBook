@@ -12,6 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OffLine_HouseholdBook"
         tools:targetApi="31">
+        <receiver
+            android:name=".ReportWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/report_widget_info" />
+        </receiver>
+
+        <activity
+            android:name=".ReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CalendarHome"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
