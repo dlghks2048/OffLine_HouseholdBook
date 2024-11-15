@@ -70,11 +70,9 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    @Override
-    protected void finalize() throws Throwable {
+    public void close() {
         readDb.close();
         writeDb.close();
-        super.finalize();
     }
 
     // financial_record 테이블에 대한 인터페이스
@@ -168,6 +166,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // 삭제
     public void deleteFinancialRecord(FinancialRecord rhs) {
+        String selection = FinancialRecordTable._ID + " LIKE ?";
+    }
+    public void deleteFinancialRecord(int _id) {
 
     }
 
