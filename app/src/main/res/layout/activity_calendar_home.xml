@@ -19,6 +19,17 @@
         app:mcv_selectionMode="single"
         app:mcv_showOtherDates="none" />
 
+    <TextView
+        android:id="@+id/res_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample Text"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendarView"
+        tools:layout_editor_absoluteY="375dp"
+        tools:ignore="MissingConstraints" />
+
     <!-- RecyclerView for displaying financial records -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -31,17 +42,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarView"
+        app:layout_constraintTop_toBottomOf="@id/res_txt"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_financial_record" />
 
-    <TextView
-        android:id="@+id/res_txt"
-        android:layout_width="384dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="12dp"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="375dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
