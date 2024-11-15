@@ -25,12 +25,5 @@ public class SettingActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button button = findViewById(R.id.buttonInsert);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DBHelper db;
-            }
-        });
     }
 }
