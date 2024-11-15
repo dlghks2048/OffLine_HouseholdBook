@@ -1,8 +1,9 @@
 package com.example.offline_householdbook;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,13 +14,13 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
 
-
 public class CalendarHome extends AppCompatActivity {
 
     private MaterialCalendarView calendarView;
     private RecyclerView recyclerView;
     private FinancialRecordAdapter adapter;
     private DBHelper dbHelper;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class CalendarHome extends AppCompatActivity {
             String selectedDate = date.getDate().toString();  // 날짜를 "yyyy-MM-dd" 형식으로 변환
             loadRecordsForSelectedDate(selectedDate);
         });
+
         // DBHelper 객체 생성, 생성자 인수는 현재 컨텍스트
         DBHelper db = new DBHelper(getApplicationContext());
         // 메서드 이름은 sql문+테이블이름(+~)
@@ -51,13 +53,32 @@ public class CalendarHome extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FinancialRecordAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
+
+        textView = findViewById(R.id.res_txt); // TextView 초기화
     }
 
-    // 선택한 날짜의 데이터를 로드하여 RecyclerView에 표시하는 메서드
     private void loadRecordsForSelectedDate(String date) {
         ArrayList<FinancialRecord> records = dbHelper.selectFinancialRecordsByDate(date);
         Log.d("CalendarHome", "Selected Date: " + date + " -> Records: " + records.size());
-        adapter.updateData(records); // 어댑터 데이터 업데이트
-    }
 
+        int totalAmount = 0;
+        for (FinancialRecord record : records) {
+            totalAmount += record.getAmount();
+        }
+
+        if (totalAmount>=0)
+            textView.setText("수입 : " + totalAmount);
+        else
+            textView.setText("지출 : "+totalAmount);
+
+        // 합계가 양수이면 파란색, 음수이면 빨간색
+        if (totalAmount >= 0) {
+            textView.setTextColor(getResources().getColor(android.R.color.holo_blue_light));  // 파란색
+        } else {
+            textView.setTextColor(getResources().getColor(android.R.color.holo_red_light));  // 빨간색
+        }
+
+        // 어댑터 데이터 업데이트
+        adapter.updateData(records);
+    }
 }
