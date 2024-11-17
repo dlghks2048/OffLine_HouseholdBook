@@ -33,6 +33,7 @@ import java.util.*;
 
 public class MainHome extends AppCompatActivity {
     ImageButton CalendarButton, ReportButton, SettingButton;
+    private DBHelper dbHelper;
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,14 @@ public class MainHome extends AppCompatActivity {
         CalendarButton = findViewById(R.id.btn_calendar);
         ReportButton = findViewById(R.id.btn_graph);
         SettingButton = findViewById(R.id.btn_settings);
+
+        // TextView 변수 선언
+        TextView wonTextView = findViewById(R.id.won);
+        TextView vsTextView = findViewById(R.id.vs);
+        TextView useTextView = findViewById(R.id.use);
+
+        // DBHelper 인스턴스 생성
+        dbHelper = new DBHelper(getApplicationContext());
 
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +81,60 @@ public class MainHome extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // 텍스트뷰를 업데이트하는 메서드 호출
+        updateTextViews();
+    }
+
+    // 텍스트뷰 갱신 메서드 정의
+    private void updateTextViews() {
+        TextView wonTextView = findViewById(R.id.won);
+        TextView vsTextView = findViewById(R.id.vs);
+        TextView useTextView = findViewById(R.id.use);
+
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
+
+        // 현재 자산 계산
+        ArrayList<FinancialRecord> allRecords = dbHelper.selectFinancialRecordsByDate("1900-01-01", "2100-12-31");
+        int currentAssets = 0;
+        for (FinancialRecord record : allRecords) {
+            currentAssets += record.getAmount();
+        }
+        wonTextView.setText(String.format("%,d원", currentAssets));
+
+        // 이번 달과 지난 달 지출 비교
+        String currentMonth = getCurrentMonth(); // "YYYY-MM"
+        String lastMonth = getLastMonth();       // "YYYY-MM"
+
+        ArrayList<FinancialRecord> currentMonthRecords = dbHelper.selectFinancialRecordsByDate(currentMonth + "-01", currentMonth + "-31");
+        int currentMonthExpense = 0;
+        for (FinancialRecord record : currentMonthRecords) {
+            if (record.getAmount() < 0) {
+                currentMonthExpense += Math.abs(record.getAmount());
+            }
+        }
+
+        ArrayList<FinancialRecord> lastMonthRecords = dbHelper.selectFinancialRecordsByDate(lastMonth + "-01", lastMonth + "-31");
+        int lastMonthExpense = 0;
+        for (FinancialRecord record : lastMonthRecords) {
+            if (record.getAmount() < 0) {
+                lastMonthExpense += Math.abs(record.getAmount());
+            }
+        }
+
+        int expenseDifference = currentMonthExpense - lastMonthExpense;
+        if (expenseDifference > 0) {
+            vsTextView.setText(String.format("지난 달에 비해 \n%,d원 더 썼습니다.", expenseDifference));
+        } else {
+            vsTextView.setText(String.format("지난 달에 비해 \n%,d원 덜 썼습니다.", Math.abs(expenseDifference)));
+        }
+
+        useTextView.setText(String.format("%,d원", currentMonthExpense));
     }
 
     public void showBottomSheetDialog(View view) {
@@ -153,5 +216,17 @@ public class MainHome extends AppCompatActivity {
         // 날짜를 "yyyy-MM-dd" 형식으로 포맷팅
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return sdf.format(new Date(year - 1900, month, day)); // Date 객체로 변환 후 포맷
+    }
+
+    public String getCurrentMonth() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+        return sdf.format(new Date()); // 현재 월 (YYYY-MM)
+    }
+
+    public String getLastMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1); // 지난 달로 이동
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+        return sdf.format(calendar.getTime()); // 지난 월 (YYYY-MM)
     }
 }
