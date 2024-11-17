@@ -11,6 +11,7 @@ import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -85,8 +86,13 @@ public class MainHome extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+
         // 캘린더 뷰 (홈 화면에서는 현재 날짜를 사용)
         String selectedDate = getCurrentDate();  // 현재 날짜를 가져옴
+
+        //날짜 표시 덱스트 뷰
+        TextView textView = bottomSheetView.findViewById(R.id.select_dayText);
+        textView.setText(selectedDate);
 
         // 금액과 메모 입력을 위한 EditText
         EditText moneyEdit = bottomSheetView.findViewById(R.id.moneyEdit);

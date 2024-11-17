@@ -117,6 +117,9 @@ public class CalendarHome extends AppCompatActivity {
 
         // 캘린더 뷰
         String selectedDate = getSelectedDate(calendarView);
+        //날짜 표시 덱스트 뷰
+        TextView textView = bottomSheetView.findViewById(R.id.select_dayText);
+        textView.setText(selectedDate);
 
         // 금액과 메모 입력을 위한 EditText
         EditText moneyEdit = bottomSheetView.findViewById(R.id.moneyEdit);
