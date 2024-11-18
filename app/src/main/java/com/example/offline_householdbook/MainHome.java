@@ -177,8 +177,8 @@ public class MainHome extends AppCompatActivity {
             }
 
             // 금액과 메모가 비어있는지 확인
-            if (moneyString.isEmpty() || memo.isEmpty()) {
-                Toast.makeText(this, "금액과 메모를 입력해주세요.", Toast.LENGTH_SHORT).show();
+            if (moneyString.isEmpty()) {
+                Toast.makeText(this, "금액을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -197,6 +197,9 @@ public class MainHome extends AppCompatActivity {
             // FinancialRecord 객체 생성 및 DB에 추가
             FinancialRecord record = new FinancialRecord(date, category, money, memo);
             db.insertFinancialRecord(record);
+
+            // 텍스트뷰를 업데이트하는 메서드 호출
+            updateTextViews();
 
             // 바텀 시트 닫기
             bottomSheetDialog.dismiss();
