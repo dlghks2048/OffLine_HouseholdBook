@@ -37,6 +37,7 @@ android {
 
 
 dependencies {
+    implementation("androidx.core:core:1.x.x")
     implementation("com.jakewharton.threetenabp:threetenabp:1.3.1")
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
     implementation(libs.appcompat)

@@ -25,6 +25,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import org.threeten.bp.LocalDate;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -92,23 +93,20 @@ public class CalendarHome extends AppCompatActivity {
 
     private void loadRecordsForSelectedDate(String date) {
         ArrayList<FinancialRecord> records = dbHelper.selectFinancialRecordsByDate(date);
-        Log.d("CalendarHome", "Selected Date: " + date + " -> Records: " + records.size());
-
         int totalAmount = 0;
         for (FinancialRecord record : records) {
             totalAmount += record.getAmount();
         }
 
-        if (totalAmount>=0)
-            textView.setText("수입 : " + totalAmount);
-        else
-            textView.setText("지출 : "+totalAmount);
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("ko", "KR"));
+        String formattedAmount = formatter.format(totalAmount);
 
-        // 합계가 양수이면 파란색, 음수이면 빨간색
         if (totalAmount >= 0) {
-            textView.setTextColor(getResources().getColor(android.R.color.holo_blue_light));  // 파란색
+            textView.setText("+" + formattedAmount);
+            textView.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
         } else {
-            textView.setTextColor(getResources().getColor(android.R.color.holo_red_light));  // 빨간색
+            textView.setText(formattedAmount);
+            textView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         }
 
         adapter.updateData(records);
@@ -153,8 +151,8 @@ public class CalendarHome extends AppCompatActivity {
             }
 
             // 금액과 메모가 비어있는지 확인
-            if (moneyString.isEmpty() || memo.isEmpty()) {
-                Toast.makeText(this, "금액과 메모를 입력해주세요.", Toast.LENGTH_SHORT).show();
+            if (moneyString.isEmpty()) {
+                Toast.makeText(this, "금액을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -163,7 +161,7 @@ public class CalendarHome extends AppCompatActivity {
             try {
                 money = Integer.parseInt(moneyString);
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "유효한 금액을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "금액은 숫자만 가능합니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
