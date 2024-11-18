@@ -1,5 +1,7 @@
 package com.example.offline_householdbook;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -64,7 +66,7 @@ public class ReportActivity extends AppCompatActivity {
         }
 
         // 데이터셋 생성
-        LineDataSet dataSet = new LineDataSet(entries, "");  // 라벨을 빈 문자열로 설정하여 표시되지 않게 함
+        LineDataSet dataSet = new LineDataSet(entries, "월간 지출");
         dataSet.setDrawValues(false);  // 값 라벨 숨기기
         dataSet.setDrawIcons(false);  // 아이콘 숨기기
 
@@ -75,10 +77,6 @@ public class ReportActivity extends AppCompatActivity {
         // X축, Y축 설정
         setXAxisForMonthly();
         setYAxis();
-
-        // 범례 설정 비활성화
-        Legend legend = lineChart.getLegend();
-        legend.setEnabled(false);
 
         lineChart.invalidate();
     }
@@ -98,9 +96,12 @@ public class ReportActivity extends AppCompatActivity {
         }
 
         // 데이터셋 생성
-        LineDataSet dataSet = new LineDataSet(entries, "");  // 라벨을 빈 문자열로 설정하여 표시되지 않게 함
+        LineDataSet dataSet = new LineDataSet(entries, "주간 지출");
         dataSet.setDrawValues(false);  // 값 라벨 숨기기
         dataSet.setDrawIcons(false);  // 아이콘 숨기기
+
+        dataSet.setColor(Color.rgb(255, 0, 0));
+        dataSet.setCircleColor(Color.rgb(255, 0, 0));
 
         // LineData에 데이터셋 추가
         LineData lineData = new LineData(dataSet);
@@ -109,6 +110,7 @@ public class ReportActivity extends AppCompatActivity {
         // X축, Y축 설정
         setXAxisForWeekly();
         setYAxis();
+
 
         lineChart.invalidate();
     }
