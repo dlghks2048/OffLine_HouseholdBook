@@ -4,6 +4,7 @@ package com.example.offline_householdbook;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,10 +16,21 @@ import java.util.List;
 
 public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecordAdapter.ViewHolder> {
 
+    // OnItemClickListener 인터페이스 정의
+    public interface OnItemClickListener {
+        void onItemClick(FinancialRecord record);
+        void onDeleteClick(FinancialRecord record);
+    }
+
     private ArrayList<FinancialRecord> records;
+    private OnItemClickListener listener;
 
     public FinancialRecordAdapter(ArrayList<FinancialRecord> records) {
         this.records = records;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -35,6 +47,18 @@ public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecord
         holder.tvCategory.setText(record.getCategoryName());
         holder.tvAmount.setText("₩ " + record.getAmount());
         holder.tvMemo.setText(record.getMemo());
+
+        holder.minusButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDeleteClick(record);
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(record);
+            }
+        });
     }
 
     @Override
@@ -42,14 +66,14 @@ public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecord
         return records.size();
     }
 
-    // 새로운 데이터를 설정하고 RecyclerView를 갱신하는 메서드
     public void updateData(ArrayList<FinancialRecord> newRecords) {
         this.records = newRecords;
-        notifyDataSetChanged(); // 데이터 변경 알림
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvDate, tvCategory, tvAmount, tvMemo;
+        ImageButton minusButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,6 +81,7 @@ public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecord
             tvCategory = itemView.findViewById(R.id.tv_category);
             tvAmount = itemView.findViewById(R.id.tv_amount);
             tvMemo = itemView.findViewById(R.id.tv_memo);
+            minusButton = itemView.findViewById(R.id.minusButton);
         }
     }
 }

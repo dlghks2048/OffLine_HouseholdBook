@@ -9,7 +9,7 @@
     <!-- Date TextView -->
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/minusButton"
         android:layout_width="27dp"
         android:layout_height="9dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_memo"

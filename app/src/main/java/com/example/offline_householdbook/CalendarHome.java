@@ -69,6 +69,19 @@ public class CalendarHome extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FinancialRecordAdapter(new ArrayList<>());
+
+        adapter.setOnItemClickListener(new FinancialRecordAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(FinancialRecord record) {
+            }
+
+            @Override
+            public void onDeleteClick(FinancialRecord record) {
+                deleteRecordForSelectedDate(record.get_id());
+                loadRecordsForSelectedDate(record.getDate());
+            }
+        });
+
         recyclerView.setAdapter(adapter);
 
         textView = findViewById(R.id.res_txt); // TextView 초기화
@@ -98,7 +111,6 @@ public class CalendarHome extends AppCompatActivity {
             textView.setTextColor(getResources().getColor(android.R.color.holo_red_light));  // 빨간색
         }
 
-        // 어댑터 데이터 업데이트
         adapter.updateData(records);
     }
 
@@ -136,7 +148,7 @@ public class CalendarHome extends AppCompatActivity {
 
             // 날짜가 선택되었는지
             if (selectedDate == null){
-                Toast.makeText(this, "날자를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
