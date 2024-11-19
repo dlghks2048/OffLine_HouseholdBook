@@ -75,6 +75,7 @@ public class CalendarHome extends AppCompatActivity {
             @Override
             public void onDeleteClick(FinancialRecord record) {
                 deleteRecordForSelectedDate(record);
+                String selectedDate = getSelectedDate(calendarView); // 현재 날짜
             }
         });
 
@@ -88,24 +89,24 @@ public class CalendarHome extends AppCompatActivity {
 
     private void loadRecordsForSelectedDate(String date) {
         ArrayList<FinancialRecord> records = dbHelper.selectFinancialRecordsByDate(date);
+
         int totalAmount = 0;
         for (FinancialRecord record : records) {
             totalAmount += record.getAmount();
         }
 
+        // 금액 포맷 업데이트
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("ko", "KR"));
         String formattedAmount = formatter.format(totalAmount);
+        textView.setText(totalAmount >= 0 ? "+" + formattedAmount : formattedAmount);
+        textView.setTextColor(getResources().getColor(
+                totalAmount >= 0 ? android.R.color.holo_blue_dark : android.R.color.holo_red_dark
+        ));
 
-        if (totalAmount >= 0) {
-            textView.setText("+" + formattedAmount);
-            textView.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-        } else {
-            textView.setText(formattedAmount);
-            textView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-        }
-
+        // 어댑터 데이터 업데이트
         adapter.updateData(records);
     }
+
 
     // BottomSheetDialog 띄우는 메서드
     private void showBottomSheetDialog() {
@@ -200,12 +201,26 @@ public class CalendarHome extends AppCompatActivity {
         dbHelper.updateFinancialRecord(id, record);
     }
 
-    public void deleteRecordForSelectedDate(FinancialRecord record){
-        int position = adapter.getData().indexOf(record); // 삭제할 아이템 위치
+    public void deleteRecordForSelectedDate(FinancialRecord record) {
+        int position = adapter.getData().indexOf(record);
         if (position != -1) {
-            adapter.getData().remove(position); // 데이터 삭제
-            adapter.notifyItemRemoved(position); // RecyclerView에 알림 (애니메이션 트리거)
-            dbHelper.deleteFinancialRecord(record.get_id()); // DB에서도 삭제
+            // 먼저 화면에서만 아이템을 제거하고 애니메이션 실행
+            adapter.getData().remove(position);
+            adapter.notifyItemRemoved(position);
+
+            // 애니메이션이 완료된 후에 실제 DB 삭제 및 데이터 갱신
+            recyclerView.postDelayed(() -> {
+                // DB에서 데이터 삭제
+                dbHelper.deleteFinancialRecord(record.get_id());
+
+                // 현재 선택된 날짜의 모든 데이터를 다시 로드하기 전에 약간의 지연
+                recyclerView.postDelayed(() -> {
+                    String selectedDate = getSelectedDate(calendarView);
+                    loadRecordsForSelectedDate(selectedDate);
+                }, 50);
+            }, 350);
         }
     }
+
+
 }
