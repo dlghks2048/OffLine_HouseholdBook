@@ -271,7 +271,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String selection = FinancialRecordTable._ID + "=?";
         // where절의 인수
         String[] selectionArgs = {Integer.toString(_id)};
-        // 튜플 삭제
+        // 레코드 삭제
         int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
 
         // 잔액 업데이트
