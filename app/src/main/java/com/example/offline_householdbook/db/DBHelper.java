@@ -29,6 +29,12 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_BALANCE = "balance";
         public static final String COLUMN_NAME_DARK_MODE = "dark_mode";
     }
+    // total_amount 뷰
+    final static class totalAmount implements BaseColumns {
+        public static final String VIEW_NAME = "total_amount";
+        public static final String COLUMN_NAME_DATE = "date";
+        public static final String COLUMN_NAME_SUM_AMOUNT = "sum_amount";
+    }
     // DB 이름과 버전
     private static final String DATABASE_NAME = "HouseholdBook.db";
     private static final int DATABASE_VERSION = 1;
@@ -58,6 +64,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 SettingTable.COLUMN_NAME_PASSWORD + " TEXT, " +
                 SettingTable.COLUMN_NAME_BALANCE + " INTEGER, " +
                 SettingTable.COLUMN_NAME_DARK_MODE + " INTEGER)");
+
+        // Date별 amount합의 View 생성
+        sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS " + totalAmount.VIEW_NAME +" AS " +
+                "SELECT " +
+                FinancialRecordTable.COLUMN_NAME_DATE + ", " +
+                 "SUM(" + FinancialRecordTable.COLUMN_NAME_AMOUNT + ") AS " +totalAmount.COLUMN_NAME_SUM_AMOUNT +
+                " FROM " + FinancialRecordTable.TABLE_NAME +
+                " GROUP BY " + FinancialRecordTable.COLUMN_NAME_DATE);
 
         String query = "SELECT * FROM " + SettingTable.TABLE_NAME;
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
@@ -366,4 +380,34 @@ public class DBHelper extends SQLiteOpenHelper {
         );
     }
 
+    /* -------------- total_amount 뷰에 대한 인터페이스 -------------- */
+    // 모든 date 조회
+
+    public ArrayList<String> getAllDates() {
+        ArrayList<String> dates = new ArrayList<>();
+
+        String query = "SELECT "+ totalAmount.COLUMN_NAME_DATE + " FROM " + totalAmount.VIEW_NAME;
+        Cursor cursor = readDb.rawQuery(query, null);
+
+        while (cursor.moveToNext())
+            dates.add(cursor.getString(cursor.getColumnIndexOrThrow(totalAmount.COLUMN_NAME_DATE)));
+
+        cursor.close();
+
+        return dates;
+    }
+    public int getAmountSumForDate(String date) {
+        int sumAmount = 0;
+
+        String query = "SELECT " + totalAmount.COLUMN_NAME_SUM_AMOUNT + " FROM " + totalAmount.VIEW_NAME +
+                " WHERE " + totalAmount.COLUMN_NAME_DATE + " = ?";
+        Cursor cursor = readDb.rawQuery(query, new String[]{date});
+
+        while (cursor.moveToNext())
+            sumAmount = cursor.getInt(cursor.getColumnIndexOrThrow(totalAmount.COLUMN_NAME_SUM_AMOUNT));
+
+        cursor.close();
+
+        return sumAmount;
+    }
 }
