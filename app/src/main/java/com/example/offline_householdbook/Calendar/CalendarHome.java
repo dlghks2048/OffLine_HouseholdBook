@@ -54,11 +54,11 @@ public class CalendarHome extends AppCompatActivity {
         DBHelper db = new DBHelper(getApplicationContext());
         // 메서드 이름은 sql문+테이블이름(+~)
         // insertFinancialRecord는 FinancialRecord객체를 생성하여 전달하면 됨
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "문구", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "교통", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "취미", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "외식", 10000, "메모"));
-        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "게임", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-14", "문구", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-13", "교통", -10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-12", "취미", -10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-11", "외식", 10000, "메모"));
+        db.insertFinancialRecord(new FinancialRecord("2024-11-10", "게임", -10000, "메모"));
         db.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
 
         // RecyclerView 초기화 및 어댑터 설정
@@ -75,7 +75,6 @@ public class CalendarHome extends AppCompatActivity {
             @Override
             public void onDeleteClick(FinancialRecord record) {
                 deleteRecordForSelectedDate(record);
-                String selectedDate = getSelectedDate(calendarView); // 현재 날짜
             }
         });
 
@@ -85,6 +84,8 @@ public class CalendarHome extends AppCompatActivity {
 
         // 이미지 버튼 클릭 리스너 설정
         findViewById(R.id.imageView_Insert).setOnClickListener(v -> showBottomSheetDialog());
+
+        updateCalendarDecorators();
     }
 
     private void loadRecordsForSelectedDate(String date) {
@@ -140,19 +141,16 @@ public class CalendarHome extends AppCompatActivity {
             String moneyString = moneyEdit.getText().toString();
             String memo = textMemo.getText().toString();
 
-            // 날짜가 선택되었는지
-            if (selectedDate == null){
+            if (selectedDate == null) {
                 Toast.makeText(this, "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 금액과 메모가 비어있는지 확인
             if (moneyString.isEmpty()) {
                 Toast.makeText(this, "금액을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 금액 입력이 숫자인지 확인
             int money;
             try {
                 money = Integer.parseInt(moneyString);
@@ -161,18 +159,18 @@ public class CalendarHome extends AppCompatActivity {
                 return;
             }
 
-            // DBHelper 객체 생성
-            DBHelper db = new DBHelper(getApplicationContext());
-
-            // FinancialRecord 객체 생성 및 DB에 추가
+            // FinancialRecord 생성 및 DB 저장
             FinancialRecord record = new FinancialRecord(date, category, money, memo);
-            db.insertFinancialRecord(record);
+            dbHelper.insertFinancialRecord(record);
 
-            //캘린더와 연결된 리사이클뷰 텍스트 뷰 업데이트
-            loadRecordsForSelectedDate(selectedDate);
-            // 바텀 시트 닫기
+            loadRecordsForSelectedDate(date);
+            // 캘린더 데코레이터 갱신
+            updateCalendarDecorators();
+
+            // BottomSheetDialog 닫기
             bottomSheetDialog.dismiss();
         });
+
 
         bottomSheetDialog.show();
     }
@@ -222,5 +220,14 @@ public class CalendarHome extends AppCompatActivity {
         }
     }
 
+    private void updateCalendarDecorators() {
+        calendarView.removeDecorators(); // 기존 데코레이터 제거
+
+        ArrayList<String> allDates = dbHelper.getAllDates(); // DB의 모든 날짜 가져오기
+        for (String date : allDates) {
+            // CombinedDecorator를 이용해 날짜 꾸미기
+            calendarView.addDecorator(new CombinedDecorator(dbHelper, date));
+        }
+    }
 
 }
