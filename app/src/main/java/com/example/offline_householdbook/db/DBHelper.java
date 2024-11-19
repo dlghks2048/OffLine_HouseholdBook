@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -99,11 +98,25 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(FinancialRecordTable.COLUMN_NAME_MEMO, record.getMemo());
 
         long result = writeDb.insert(FinancialRecordTable.TABLE_NAME, null, values);
-        if (result == -1) {
-            Log.e("DBHelper", "Insert failed");
-        } else {
-            Log.d("DBHelper", "Insert successful");
-        }
+        int curBalance = selectSettingBalance();
+        updateSettingBalance(curBalance + record.getAmount());
+    }
+    // _id로 조회
+    private FinancialRecord selectFinancialRecordsById(int id) {
+        String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
+                " WHERE " + FinancialRecordTable._ID + " = ?";
+
+        Cursor cursor = readDb.rawQuery(query, new String[]{Integer.toString(id)});
+        FinancialRecord fr;
+        fr = new FinancialRecord(
+                cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable._ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
+                cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_MEMO))
+        );
+
+        return fr;
     }
     // 카테고리 이름으로 조회
     public ArrayList<FinancialRecord> selectFinancialRecordsByCategoryName(String categoryName) {
@@ -193,6 +206,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 selection,
                 selectionArgs
         );
+
+        // 차이 계산
+        int differ = after.getAmount() - before.getAmount();
+        // 잔액 업데이트
+        int curBalance = selectSettingBalance();
+        updateSettingBalance(curBalance + differ);
     }
     // _id로 조회하여 업데이트
     public void updateFinancialRecord(int beforeId, FinancialRecord after) {
@@ -214,6 +233,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 selection,
                 selectionArgs
         );
+
+        FinancialRecord before = selectFinancialRecordsById(beforeId);
+        // 차이 계산
+        int differ = after.getAmount() - before.getAmount();
+        // 잔액 업데이트
+        int curBalance = selectSettingBalance();
+        updateSettingBalance(curBalance + differ);
     }
 
     // 삭제, _id로 조회하지 않음
@@ -315,7 +341,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(SettingTable.COLUMN_NAME_DARK_MODE, isDarkMode);
 
         // 업데이트 쿼리문의 where절
-        String selection = SettingTable._ID + "=1";
+        String selection = SettingTable ._ID + "=1";
 
         int count = writeDb.update(
                 SettingTable.TABLE_NAME,
