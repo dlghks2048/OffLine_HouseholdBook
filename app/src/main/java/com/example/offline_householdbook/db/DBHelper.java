@@ -385,7 +385,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<String> getAllDates() {
         ArrayList<String> dates = new ArrayList<>();
 
-        String query = "SELECT "+ totalAmount.COLUMN_NAME_DATE + " FROM " + totalAmount.VIEW_NAME;
+        String query = "SELECT * FROM " + totalAmount.VIEW_NAME;
         Cursor cursor = readDb.rawQuery(query, null);
 
         while (cursor.moveToNext())
@@ -399,7 +399,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int getAmountSumForDate(String date) {
         int sumAmount = 0;
 
-        String query = "SELECT " + totalAmount.COLUMN_NAME_SUM_AMOUNT + " FROM " + totalAmount.VIEW_NAME +
+        String query = "SELECT * FROM " + totalAmount.VIEW_NAME +
                 " WHERE " + totalAmount.COLUMN_NAME_DATE + " = ?";
         Cursor cursor = readDb.rawQuery(query, new String[]{date});
 
