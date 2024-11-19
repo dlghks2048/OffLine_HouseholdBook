@@ -4,12 +4,16 @@
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
 
-    <string-array name="spinner_items">
+    <string-array name="expense_spinner_items">
         <item>식비</item>
         <item>교통/통신</item>
         <item>주거/관리비</item>
         <item>의료/건강</item>
         <item>쇼핑/취미</item>
         <item>기타</item>
+    </string-array>
+
+    <string-array name="income_spinner_items">
+        <item>수입</item>
     </string-array>
 </resources>

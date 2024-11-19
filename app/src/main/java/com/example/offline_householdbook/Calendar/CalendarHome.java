@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.example.offline_householdbook.R;
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.ChipGroup;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -115,12 +117,45 @@ public class CalendarHome extends AppCompatActivity {
         View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.calendar_bottom_sheet, null);
         bottomSheetDialog.setContentView(bottomSheetView);
 
-        // 스피너 (카테고리)
+        // ChipGroup
+        ChipGroup chipGroup = bottomSheetView.findViewById(R.id.chipGroup);
         Spinner spinner = bottomSheetView.findViewById(R.id.CategorySpin);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinner_items, android.R.layout.simple_spinner_item);
+        //처음에 초기화가 필요, 지출 상태로 초기화
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                R.array.expense_spinner_items, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        final int[] i = {0};// 0은 지출 1은 수입
+        // 선택된 chip의 id를 가져와서 스피너 초기화
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup chipGroup, int checkedId) {
+                if (checkedId == -1) {
+                    if(i[0] == 0)
+                        chipGroup.check(R.id.chipExpense);
+                    else
+                        chipGroup.check(R.id.chipIncome);
+                }
+
+                if (checkedId == R.id.chipExpense) {
+                    // "지출" 선택 시 기존 spinner의 설정 유지
+                    i[0] = 0;
+                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                            R.array.expense_spinner_items, android.R.layout.simple_spinner_item);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(adapter);
+                } else if (checkedId == R.id.chipIncome) {
+                    // "수입" 선택 시 spinner 초기화 (아이템 1개만 포함)
+                    i[0] = 1;
+                    chipGroup.check(R.id.chipIncome);
+                    ArrayAdapter<CharSequence> incomeAdapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                            R.array.income_spinner_items, android.R.layout.simple_spinner_item);
+                    incomeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(incomeAdapter);
+                }
+            }
+        });
 
         // 캘린더 뷰
         String selectedDate = getSelectedDate(calendarView);
