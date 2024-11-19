@@ -382,7 +382,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /* -------------- total_amount 뷰에 대한 인터페이스 -------------- */
     // 모든 date 조회
-
     public ArrayList<String> getAllDates() {
         ArrayList<String> dates = new ArrayList<>();
 
@@ -396,6 +395,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return dates;
     }
+    // Date별 Amount의 총합 조회
     public int getAmountSumForDate(String date) {
         int sumAmount = 0;
 
