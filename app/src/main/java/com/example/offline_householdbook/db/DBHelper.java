@@ -107,15 +107,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 " WHERE " + FinancialRecordTable._ID + " = ?";
 
         Cursor cursor = readDb.rawQuery(query, new String[]{Integer.toString(id)});
-        FinancialRecord fr;
-        fr = new FinancialRecord(
-                cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable._ID)),
-                cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
-                cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
-                cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
-                cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_MEMO))
-        );
+        FinancialRecord fr = null;
 
+        while (cursor.moveToNext()) {
+            fr = new FinancialRecord(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable._ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_DATE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_CATEGORY_NAME)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_AMOUNT)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FinancialRecordTable.COLUMN_NAME_MEMO))
+            );
+        }
+
+        cursor.close();
         return fr;
     }
     // 카테고리 이름으로 조회
@@ -253,15 +257,26 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] selectionArgs = {rhs.getDate(), rhs.getCategoryName(), Integer.toString(rhs.getAmount()), rhs.getMemo()};
 
         int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
+
+        // 잔액 업데이트
+        int curBalance = selectSettingBalance();
+        updateSettingBalance(curBalance - rhs.getAmount());
     }
     // _id 값으로 삭제
     public void deleteFinancialRecord(int _id) {
+        // 삭제할 행을 얻어냄
+        FinancialRecord temp = selectFinancialRecordsById(_id);
+
         // 삭제 쿼리문의 where절
         String selection = FinancialRecordTable._ID + "=?";
         // where절의 인수
         String[] selectionArgs = {Integer.toString(_id)};
-
+        // 튜플 삭제
         int deleteRows = writeDb.delete(FinancialRecordTable.TABLE_NAME, selection, selectionArgs);
+
+        // 잔액 업데이트
+        int curBalance = selectSettingBalance();
+        updateSettingBalance(curBalance - temp.getAmount());
     }
 
     /* -------------- settings 테이블에 대한 인터페이스 -------------- */
