@@ -5,11 +5,11 @@
     <string name="app_widget_description">This is an app widget description</string>
 
     <string-array name="spinner_items">
-        <item>카테고리 1</item>
-        <item>카테고리 2</item>
-        <item>카테고리 3</item>
-        <item>카테고리 4</item>
-        <item>카테고리 5</item>
-        <item>카테고리 6</item>
+        <item>식비</item>
+        <item>교통/통신</item>
+        <item>주거/관리비</item>
+        <item>의료/건강</item>
+        <item>쇼핑/취미</item>
+        <item>기타</item>
     </string-array>
 </resources>
