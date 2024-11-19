@@ -227,6 +227,13 @@ public class MainHome extends AppCompatActivity {
                 Toast.makeText(this, "유효한 금액을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if(money <= 0 ){
+                Toast.makeText(this, "0 혹은 그 이하의 금액은 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(chipGroup.getCheckedChipId() == R.id.chipExpense)
+                money = -money;
 
             // FinancialRecord 객체 생성 및 DB에 추가
             FinancialRecord record = new FinancialRecord(date, category, money, memo);

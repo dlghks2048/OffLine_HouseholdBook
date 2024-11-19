@@ -190,9 +190,15 @@ public class CalendarHome extends AppCompatActivity {
             try {
                 money = Integer.parseInt(moneyString);
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "금액은 숫자만 가능합니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "유효한 금액을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if(money <= 0 ){
+                Toast.makeText(this, "0 혹은 그 이하의 금액은 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(chipGroup.getCheckedChipId() == R.id.chipExpense)
+                money = -money;
 
             // FinancialRecord 생성 및 DB 저장
             FinancialRecord record = new FinancialRecord(date, category, money, memo);
