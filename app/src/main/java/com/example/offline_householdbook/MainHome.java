@@ -189,12 +189,9 @@ public class MainHome extends AppCompatActivity {
                 return;
             }
 
-            // DBHelper 객체 생성
-            DBHelper db = new DBHelper(getApplicationContext());
-
             // FinancialRecord 객체 생성 및 DB에 추가
             FinancialRecord record = new FinancialRecord(date, category, money, memo);
-            db.insertFinancialRecord(record);
+            dbHelper.insertFinancialRecord(record);
 
             // 텍스트뷰를 업데이트하는 메서드 호출
             updateTextViews();
