@@ -1,10 +1,6 @@
-package com.example.offline_householdbook;
+package com.example.offline_householdbook.Calendar;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.text.TextPaint;
-import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -13,7 +9,7 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade;
 
 import java.util.Calendar;
 
-public class CurrentCalendarDcorator implements DayViewDecorator {
+public class CurrentCalendarDecorator implements DayViewDecorator {
 
     @Override
     public boolean shouldDecorate(CalendarDay day) {

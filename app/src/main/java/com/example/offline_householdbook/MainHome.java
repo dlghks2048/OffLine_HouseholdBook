@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -20,11 +19,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.offline_householdbook.Calendar.CalendarHome;
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

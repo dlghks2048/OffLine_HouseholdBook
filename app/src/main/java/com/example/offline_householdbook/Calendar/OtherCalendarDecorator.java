@@ -1,4 +1,4 @@
-package com.example.offline_householdbook;
+package com.example.offline_householdbook.Calendar;
 
 import android.graphics.Color;
 import android.text.style.ForegroundColorSpan;

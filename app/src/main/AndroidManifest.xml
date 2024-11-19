@@ -32,7 +32,7 @@
             android:name=".ReportActivity"
             android:exported="false" />
         <activity
-            android:name=".CalendarHome"
+            android:name=".Calendar.CalendarHome"
             android:exported="false" >
         </activity>
         <activity

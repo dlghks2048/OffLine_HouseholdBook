@@ -1,13 +1,10 @@
-package com.example.offline_householdbook;
+package com.example.offline_householdbook.Calendar;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -17,18 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.offline_householdbook.R;
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
-import org.threeten.bp.LocalDate;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -69,6 +64,7 @@ public class CalendarHome extends AppCompatActivity {
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new FadeOutItemAnimator()); // CustomItemAnimator 적용
         adapter = new FinancialRecordAdapter(new ArrayList<>());
 
         adapter.setOnItemClickListener(new FinancialRecordAdapter.OnItemClickListener() {
@@ -78,8 +74,7 @@ public class CalendarHome extends AppCompatActivity {
 
             @Override
             public void onDeleteClick(FinancialRecord record) {
-                deleteRecordForSelectedDate(record.get_id());
-                loadRecordsForSelectedDate(record.getDate());
+                deleteRecordForSelectedDate(record);
             }
         });
 
@@ -205,7 +200,12 @@ public class CalendarHome extends AppCompatActivity {
         dbHelper.updateFinancialRecord(id, record);
     }
 
-    public void deleteRecordForSelectedDate(int id){
-        dbHelper.deleteFinancialRecord(id);
+    public void deleteRecordForSelectedDate(FinancialRecord record){
+        int position = adapter.getData().indexOf(record); // 삭제할 아이템 위치
+        if (position != -1) {
+            adapter.getData().remove(position); // 데이터 삭제
+            adapter.notifyItemRemoved(position); // RecyclerView에 알림 (애니메이션 트리거)
+            dbHelper.deleteFinancialRecord(record.get_id()); // DB에서도 삭제
+        }
     }
 }

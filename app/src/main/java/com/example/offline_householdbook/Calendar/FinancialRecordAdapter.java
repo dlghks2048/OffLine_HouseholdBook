@@ -1,4 +1,4 @@
-package com.example.offline_householdbook;
+package com.example.offline_householdbook.Calendar;
 
 // FinancialRecordAdapter.java
 import android.view.LayoutInflater;
@@ -9,12 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.offline_householdbook.R;
 import com.example.offline_householdbook.db.FinancialRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecordAdapter.ViewHolder> {
+    private List<FinancialRecord> records;
 
     // OnItemClickListener 인터페이스 정의
     public interface OnItemClickListener {
@@ -22,7 +24,6 @@ public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecord
         void onDeleteClick(FinancialRecord record);
     }
 
-    private ArrayList<FinancialRecord> records;
     private OnItemClickListener listener;
 
     public FinancialRecordAdapter(ArrayList<FinancialRecord> records) {
@@ -95,5 +96,15 @@ public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecord
             tvMemo = itemView.findViewById(R.id.tv_memo);
             minusButton = itemView.findViewById(R.id.minusButton);
         }
+    }
+
+
+    public List<FinancialRecord> getData() {
+        return records;
+    }
+
+    public void updateData(List<FinancialRecord> newData) {
+        this.records = newData;
+        notifyDataSetChanged();
     }
 }
