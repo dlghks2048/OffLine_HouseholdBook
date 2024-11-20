@@ -3,15 +3,20 @@ package com.example.offline_householdbook;
 import static java.security.AccessController.getContext;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +34,8 @@ import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -202,7 +209,7 @@ public class MainHome extends AppCompatActivity {
         Button btnAction1 = bottomSheetView.findViewById(R.id.bottomBtn);
         btnAction1.setOnClickListener(v -> {
             // 사용자 입력 값 가져오기
-            String date = selectedDate;
+            String date = textView.getText().toString();
             String category = spinner.getSelectedItem().toString();
             String moneyString = moneyEdit.getText().toString();
             String memo = textMemo.getText().toString();
@@ -244,6 +251,79 @@ public class MainHome extends AppCompatActivity {
 
             // 바텀 시트 닫기
             bottomSheetDialog.dismiss();
+        });
+
+        //date Textview ClickListener
+        TextView dateText = bottomSheetView.findViewById(R.id.select_dayText);
+        dateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // BottomSheetDialog 생성
+                Dialog dialog = new BottomSheetDialog(bottomSheetDialog.getContext());
+                View centerSheetView = LayoutInflater.from(bottomSheetDialog.getContext()).inflate(R.layout.data_picker_dialog, null);
+                dialog.setContentView(centerSheetView);
+
+                // BottomSheetDialog의 크기와 위치 설정
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+
+                // NumberPicker 참조
+                NumberPicker numberPickerY = centerSheetView.findViewById(R.id.np_year);
+                NumberPicker numberPickerM = centerSheetView.findViewById(R.id.np_month);
+                NumberPicker numberPickerD = centerSheetView.findViewById(R.id.np_day);
+
+                // NumberPicker 최소값 및 최대값 설정
+                // Year 설정
+                numberPickerY.setMinValue(1900);
+                numberPickerY.setMaxValue(2100);
+                numberPickerY.setWrapSelectorWheel(true);
+
+                // Month 설정
+                numberPickerM.setMinValue(1);
+                numberPickerM.setMaxValue(12);
+                numberPickerM.setWrapSelectorWheel(true);
+
+                // Day 설정
+                numberPickerD.setMinValue(1);
+                numberPickerD.setMaxValue(31);
+                numberPickerD.setWrapSelectorWheel(true);
+
+                // TextView에서 초기값 가져오기
+                String dateTextValue = dateText.getText().toString(); // ex: "2024-11-22"
+                String[] dateParts = dateTextValue.split("-"); // 분리: [년도, 월, 일]
+                if (dateParts.length == 3) {
+                    try {
+                        numberPickerY.setValue(Integer.parseInt(dateParts[0]));
+                        numberPickerM.setValue(Integer.parseInt(dateParts[1]));
+                        numberPickerD.setValue(Integer.parseInt(dateParts[2]));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 확인 버튼 클릭 리스너 설정
+                Button confirmButton = centerSheetView.findViewById(R.id.dataBtn);
+                confirmButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // NumberPicker의 값 가져오기
+                        int year = numberPickerY.getValue();
+                        int month = numberPickerM.getValue();
+                        int day = numberPickerD.getValue();
+
+                        // TextView 값 업데이트
+                        dateText.setText(String.format("%04d-%02d-%02d", year, month, day));
+
+                        // Dialog 닫기
+                        dialog.dismiss();
+                    }
+                });
+
+                // Dialog 표시
+                dialog.show();
+            }
         });
 
         bottomSheetDialog.show();
