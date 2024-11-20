@@ -34,19 +34,14 @@ public class CombinedDecorator implements DayViewDecorator {
 
     @Override
     public boolean shouldDecorate(CalendarDay day) {
-        // 오늘 날짜 또는 특정 날짜에 대해 데코레이션 여부 확인
+        // 특정 날짜에 대해 데코레이션 여부 확인
         return day.equals(CalendarDay.from(LocalDate.parse(date)));
     }
 
     @Override
     public void decorate(DayViewFacade view) {
-        if (CalendarDay.from(LocalDate.parse(date)).equals(today)) {
-            // 오늘 날짜는 흰색으로 강조
-            view.addSpan(new ForegroundColorSpan(Color.WHITE));
-        } else {
-            // 금액에 따라 색상 변경
-            int color = totalAmount >= 0 ? Color.BLUE : Color.RED;
-            view.addSpan(new ForegroundColorSpan(color));
-        }
+        // 금액에 따라 색상 변경
+        int color = totalAmount >= 0 ? Color.BLUE : Color.RED;
+        view.addSpan(new ForegroundColorSpan(color));
     }
 }
