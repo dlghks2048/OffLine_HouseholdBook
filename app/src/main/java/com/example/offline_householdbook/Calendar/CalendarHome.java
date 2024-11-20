@@ -1,5 +1,7 @@
 package com.example.offline_householdbook.Calendar;
 
+import static com.example.offline_householdbook.MainHome.getCurrentDate;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +90,7 @@ public class CalendarHome extends AppCompatActivity {
         findViewById(R.id.imageView_Insert).setOnClickListener(v -> showBottomSheetDialog());
 
         updateCalendarDecorators();
+        calendarView.addDecorator(new CombinedDecorator(dbHelper, getCurrentDate()));
     }
 
     private void loadRecordsForSelectedDate(String date) {
@@ -251,7 +254,7 @@ public class CalendarHome extends AppCompatActivity {
             recyclerView.postDelayed(() -> {
                 // DB에서 데이터 삭제
                 dbHelper.deleteFinancialRecord(record.get_id());
-
+                updateCalendarDecorators();
                 // 현재 선택된 날짜의 모든 데이터를 다시 로드하기 전에 약간의 지연
                 recyclerView.postDelayed(() -> {
                     String selectedDate = getSelectedDate(calendarView);
@@ -259,6 +262,7 @@ public class CalendarHome extends AppCompatActivity {
                 }, 50);
             }, 350);
         }
+
     }
 
     private void updateCalendarDecorators() {

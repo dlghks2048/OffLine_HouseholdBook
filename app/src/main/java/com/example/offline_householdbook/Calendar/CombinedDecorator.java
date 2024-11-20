@@ -35,7 +35,7 @@ public class CombinedDecorator implements DayViewDecorator {
     @Override
     public boolean shouldDecorate(CalendarDay day) {
         // 오늘 날짜 또는 특정 날짜에 대해 데코레이션 여부 확인
-        return day.equals(today) || day.equals(CalendarDay.from(LocalDate.parse(date)));
+        return day.equals(CalendarDay.from(LocalDate.parse(date)));
     }
 
     @Override
