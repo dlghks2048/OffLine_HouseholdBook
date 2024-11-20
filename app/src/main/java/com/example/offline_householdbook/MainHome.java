@@ -250,7 +250,7 @@ public class MainHome extends AppCompatActivity {
     }
 
     // 현재 날짜를 "yyyy-MM-dd" 형식으로 얻는 메서드
-    private String getCurrentDate() {
+    static public String getCurrentDate() {
         // 현재 날짜를 가져오기 위한 Calendar 객체
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
