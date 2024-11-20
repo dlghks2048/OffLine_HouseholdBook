@@ -1,11 +1,21 @@
 package com.example.offline_householdbook;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.example.offline_householdbook.Calendar.CalendarHome;
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
 
@@ -21,7 +31,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.util.ArrayList;
 
 public class ReportActivity extends AppCompatActivity {
-
+    ImageButton CalendarButton, ReportButton, SettingButton, mainHomeButton;
     private LineChart lineChart;
     private Button btnMonth, btnWeek;
     private DBHelper databaseHelper;
@@ -49,6 +59,47 @@ public class ReportActivity extends AppCompatActivity {
 
         showMonthlyGraph();  // 처음에는 월간 그래프 표시
         toggleButtons(true);  // 초기 상태로 월간 버튼 활성화
+
+        CalendarButton = findViewById(R.id.btn_calendar);
+        mainHomeButton = findViewById(R.id.btn_home);
+        SettingButton = findViewById(R.id.btn_settings);
+        ReportButton = findViewById(R.id.btn_graph);
+
+        CalendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CalendarHome.class);
+                startActivity(intent);
+            }
+        });
+
+        mainHomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainHome.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        SettingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // 배경색 변경
+        ReportButton.setBackgroundColor(ContextCompat.getColor(this, R.color.bright_background_color));
+
+        // 이미지 밝게 만들기
+        Drawable drawable = ReportButton.getDrawable();
+        ColorFilter filter = new LightingColorFilter(0xFFFFFFFF, 0x00333333);  // 밝기 효과 추가
+        drawable.setColorFilter(filter);
+
+        ReportButton.setImageDrawable(drawable);
     }
 
     // 월간 그래프 표시

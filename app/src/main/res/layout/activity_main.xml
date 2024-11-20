@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/home" />
+            app:srcCompat="@drawable/home"/>
 
         <ImageButton
             android:id="@+id/btn_calendar"

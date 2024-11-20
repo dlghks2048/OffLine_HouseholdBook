@@ -6,7 +6,10 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -43,7 +47,7 @@ import java.util.Locale;
 import java.util.*;
 
 public class MainHome extends AppCompatActivity {
-    ImageButton CalendarButton, ReportButton, SettingButton;
+    ImageButton CalendarButton, ReportButton, SettingButton, mainHomeButton;
     private DBHelper dbHelper;
     @SuppressLint("WrongViewCast")
     @Override
@@ -56,14 +60,16 @@ public class MainHome extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        CalendarButton = findViewById(R.id.btn_calendar);
-        ReportButton = findViewById(R.id.btn_graph);
-        SettingButton = findViewById(R.id.btn_settings);
 
         // TextView 변수 선언
         TextView wonTextView = findViewById(R.id.won);
         TextView vsTextView = findViewById(R.id.vs);
         TextView useTextView = findViewById(R.id.use);
+
+        CalendarButton = findViewById(R.id.btn_calendar);
+        ReportButton = findViewById(R.id.btn_graph);
+        SettingButton = findViewById(R.id.btn_settings);
+        mainHomeButton = findViewById(R.id.btn_home);
 
         // DBHelper 인스턴스 생성
         dbHelper = new DBHelper(getApplicationContext());
@@ -81,6 +87,7 @@ public class MainHome extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ReportActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -89,9 +96,19 @@ public class MainHome extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
+        // 배경색 변경
+        mainHomeButton.setBackgroundColor(ContextCompat.getColor(this, R.color.bright_background_color));
+
+        // 이미지 밝게 만들기
+        Drawable drawable = mainHomeButton.getDrawable();
+        ColorFilter filter = new LightingColorFilter(0xFFFFFFFF, 0x00333333);  // 밝기 효과 추가
+        drawable.setColorFilter(filter);
+
+        mainHomeButton.setImageDrawable(drawable);
     }
 
     @Override
