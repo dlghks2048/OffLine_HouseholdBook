@@ -135,20 +135,33 @@ public class ReportActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-    // 주간 그래프 표시
     private void showWeeklyGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
 
-        // 주간 날짜 범위 설정 (예: 2024-11-01부터 2024-11-07까지)
-        String startDate = "2024-11-01";  // 주간 시작 날짜
-        String endDate = "2024-11-07";    // 주간 끝 날짜
+        // 오늘 날짜를 얻기 위해 Calendar 사용
+        Calendar calendar = Calendar.getInstance();
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH); // 오늘 날짜 (1일부터 31일까지)
+        int currentWeekDay = calendar.get(Calendar.DAY_OF_WEEK); // 오늘 요일 (일요일이 1, 월요일이 2, ... 토요일이 7)
+
+        // 오늘이 속한 주의 월요일을 계산
+        calendar.add(Calendar.DAY_OF_MONTH, -(currentWeekDay - 2));  // 월요일로 설정 (일요일이 1, 월요일이 2 ... 토요일이 7)
+        String startDate = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)); // 월요일 날짜
+
+        // 월요일로부터 6일 후에 일요일을 계산
+        calendar.add(Calendar.DAY_OF_MONTH, 6); // 일요일로 설정
+        String endDate = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)); // 일요일 날짜
 
         // 주간 데이터를 getAmountSumForDate를 통해 가져오기
-        int totalAmount = 0;
-        for (int i = 1; i <= 7; i++) {
-            String date = String.format("2024-11-%02d", i);  // 날짜를 "2024-11-01", "2024-11-02" 형식으로 생성
-            totalAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
-            entries.add(new Entry(i, totalAmount));  // 날짜를 x축, 지출 합계를 y축에 반영
+        // 월요일부터 일요일까지 반복하여 각 날짜의 지출 합계를 가져옵니다
+        calendar.add(Calendar.DAY_OF_MONTH, -(6)); // 다시 월요일 날짜로 돌아가기
+        for (int i = 0; i < 7; i++) {
+            // 해당 날짜를 가져오기
+            String date = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+            int totalAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
+            entries.add(new Entry(i + 1, totalAmount));  // 날짜를 x축, 지출 합계를 y축에 반영
+
+            // 날짜를 하루씩 더해가며 반복
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         // 데이터셋 생성 및 설정
@@ -160,12 +173,14 @@ public class ReportActivity extends AppCompatActivity {
         lineChart.setData(lineData);
 
         // X축, Y축 설정
-        setXAxisForWeekly();
-        setYAxis();
+        setXAxisForWeekly();  // 주간 그래프용 X축 설정
+        setYAxis();  // Y축 설정
 
         // 그래프 갱신
         lineChart.invalidate();
     }
+
+
 
 
     // 월간 그래프 색상 변경
