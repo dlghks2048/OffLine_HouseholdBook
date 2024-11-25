@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:layout_weight="1" />
-
+        
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup"
             android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/CategorySpin"/>
+            android:id="@+id/CategorySpin" />
     </LinearLayout>
 
     <LinearLayout

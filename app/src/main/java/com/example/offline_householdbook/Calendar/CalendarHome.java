@@ -2,6 +2,8 @@ package com.example.offline_householdbook.Calendar;
 
 import static com.example.offline_householdbook.MainHome.getCurrentDate;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.offline_householdbook.R;
+import com.example.offline_householdbook.ReportWidget;
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -210,6 +213,18 @@ public class CalendarHome extends AppCompatActivity {
             loadRecordsForSelectedDate(date);
             // 캘린더 데코레이터 갱신
             updateCalendarDecorators();
+
+            //위젯 업데이트 함수 호출
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+
+            // 특정 위젯 프로바이더의 위젯 ID 가져오기
+            ComponentName widgetComponent = new ComponentName(getApplicationContext(), ReportWidget.class);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent);
+
+            // 각 위젯 ID를 이용해 updateAppWidget 호출
+            for (int appWidgetId : appWidgetIds) {
+                ReportWidget.updateAppWidget(getApplicationContext(), appWidgetManager, appWidgetId);
+            }
 
             // BottomSheetDialog 닫기
             bottomSheetDialog.dismiss();

@@ -5,12 +5,17 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.widget.RemoteViews;
 
+import com.example.offline_householdbook.db.DBHelper;
+import com.example.offline_householdbook.db.FinancialRecord;
+
+import java.util.ArrayList;
+
 /**
  * Implementation of App Widget functionality.
  */
 public class ReportWidget extends AppWidgetProvider {
-
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+    private static DBHelper dbHelper;
+    static public void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
@@ -18,6 +23,21 @@ public class ReportWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.report_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
 
+        // DBHelper 인스턴스 생성
+        dbHelper = new DBHelper(context.getApplicationContext());
+
+        try {
+            // 현재 자산 계산
+            ArrayList<FinancialRecord> allRecords = dbHelper.selectFinancialRecordsByDate("1900-01-01", "2100-12-31");
+            int currentAssets = 0;
+            for (FinancialRecord record : allRecords) {
+                currentAssets += record.getAmount();
+            }
+            views.setTextViewText(R.id.appwidget_text, String.format("총 자산:%,d원", currentAssets));
+        }
+        catch (Exception e){
+            views.setTextViewText(R.id.appwidget_text, "초기화 오류");
+        }
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }

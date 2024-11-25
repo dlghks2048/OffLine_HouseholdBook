@@ -1,9 +1,12 @@
 package com.example.offline_householdbook;
 
+import static com.example.offline_householdbook.ReportWidget.updateAppWidget;
 import static java.security.AccessController.getContext;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -266,6 +269,17 @@ public class MainHome extends AppCompatActivity {
             // 텍스트뷰를 업데이트하는 메서드 호출
             updateTextViews();
 
+            //위젯 업데이트 함수 호출
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+
+            // 특정 위젯 프로바이더의 위젯 ID 가져오기
+            ComponentName widgetComponent = new ComponentName(getApplicationContext(), ReportWidget.class);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent);
+
+            // 각 위젯 ID를 이용해 updateAppWidget 호출
+            for (int appWidgetId : appWidgetIds) {
+                ReportWidget.updateAppWidget(getApplicationContext(), appWidgetManager, appWidgetId);
+            }
             // 바텀 시트 닫기
             bottomSheetDialog.dismiss();
         });
