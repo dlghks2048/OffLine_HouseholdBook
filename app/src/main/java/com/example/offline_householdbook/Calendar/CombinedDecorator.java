@@ -40,8 +40,10 @@ public class CombinedDecorator implements DayViewDecorator {
 
     @Override
     public void decorate(DayViewFacade view) {
+        int color;
         // 금액에 따라 색상 변경
-        int color = totalAmount >= 0 ? Color.BLUE : Color.RED;
+        if(totalAmount == 0 ) color = Color.rgb(0, 0, 0);
+        else color = totalAmount >= 0 ? Color.BLUE : Color.RED;
         view.addSpan(new ForegroundColorSpan(color));
     }
 }
