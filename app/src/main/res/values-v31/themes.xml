@@ -15,7 +15,7 @@
     <style name="Splash.Theme.OffLine_HouseholdBook" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- 기본 테마 -->
         <item name="android:windowSplashScreenBackground">@color/black</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/household_app_icon</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/household_2</item>
         <item name="android:windowSplashScreenAnimationDuration">5000</item>
         <item name="postSplashScreenTheme">@style/Theme.OffLine_HouseholdBook</item>
     </style>
