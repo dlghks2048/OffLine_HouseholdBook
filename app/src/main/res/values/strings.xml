@@ -16,4 +16,5 @@
     <string-array name="income_spinner_items">
         <item>수입</item>
     </string-array>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>

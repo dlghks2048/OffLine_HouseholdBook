@@ -33,8 +33,8 @@
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
-        android:layout_width="392dp"
-        android:layout_height="554dp"
+        android:layout_width="371dp"
+        android:layout_height="535dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.473"
