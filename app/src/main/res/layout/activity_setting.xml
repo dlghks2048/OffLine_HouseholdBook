@@ -35,7 +35,8 @@
         android:text="비밀번호 설정"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting" />
+        app:layout_constraintTop_toBottomOf="@+id/setting"
+        android:onClick="setPassword"/>
 
     <Button
         android:id="@+id/btn_theme"
