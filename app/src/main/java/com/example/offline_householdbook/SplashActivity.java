@@ -49,7 +49,6 @@ public class SplashActivity extends AppCompatActivity {
         builder.setPositiveButton("확인", (dialog, which) -> {
             String enteredPassword = input.getText().toString();
             if (correctPassword.equals(enteredPassword)) {
-                startActivity(new Intent(this, MainHome.class));
                 finish();// 비밀번호가 일치하면 MainHome으로 이동
             } else {
                 Toast.makeText(this, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
@@ -60,7 +59,9 @@ public class SplashActivity extends AppCompatActivity {
         // 취소 버튼 처리
         builder.setNegativeButton("취소", (dialog, which) -> {
             dialog.cancel();
-            finish(); // 앱 종료
+
+            finishAffinity();
+            System.exit(0); // 앱 종료
         });
 
         builder.setCancelable(false); // 다이얼로그 외부 클릭으로 닫히지 않도록 설정
