@@ -173,9 +173,6 @@ public class ReportActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-
-
-
     // 월간 그래프 색상 변경
     private void styleDataSet(LineDataSet dataSet) {
         dataSet.setDrawValues(false);  // 값 라벨 숨기기
