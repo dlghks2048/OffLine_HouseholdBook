@@ -1,6 +1,10 @@
 package com.example.offline_householdbook;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -10,10 +14,16 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.AnticipateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -42,23 +53,60 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
+@SuppressLint("MissingInflatedId")
 public class MainHome extends AppCompatActivity {
     ImageButton CalendarButton, ReportButton, SettingButton, mainHomeButton;
     private DBHelper dbHelper;
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, SplashActivity.class);
-        startActivity(intent);
-        EdgeToEdge.enable(this);
+
+        // DBHelper 초기화 및 비밀번호 확인
+        dbHelper = new DBHelper(this);
+
+        // 스플래쉬 화면 애니ㅔ이션화 콜백 로직
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getSplashScreen().setOnExitAnimationListener(splashScreenView -> {
+                final ObjectAnimator slideUp = ObjectAnimator.ofFloat(
+                        splashScreenView,
+                        View.TRANSLATION_Y,
+                        0f,
+                        -splashScreenView.getHeight()
+                );
+                slideUp.setInterpolator(new AnticipateInterpolator());
+                slideUp.setDuration(500L);
+
+                // Call SplashScreenView.remove at the end of your custom animation.
+                slideUp.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            splashScreenView.remove();
+                        }
+                    }
+                });
+
+                // Run your animation.
+                slideUp.start();
+            });
+        }
+            // 애니매이션 시간 0.5초 대기
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            String password = dbHelper.selectSettingPassword();
+            if(!password.equals(""))
+                showPasswordDialog(password);
+        }, 500);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+       // EdgeToEdge.enable(this);
 
         // TextView 변수 선언
         TextView wonTextView = findViewById(R.id.won);
@@ -70,8 +118,6 @@ public class MainHome extends AppCompatActivity {
         SettingButton = findViewById(R.id.btn_settings);
         mainHomeButton = findViewById(R.id.btn_home);
 
-        // DBHelper 인스턴스 생성
-        dbHelper = new DBHelper(getApplicationContext());
 
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,5 +421,39 @@ public class MainHome extends AppCompatActivity {
         calendar.add(Calendar.MONTH, -1); // 지난 달로 이동
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
         return sdf.format(calendar.getTime()); // 지난 월 (YYYY-MM)
+    }
+
+    private void showPasswordDialog(String correctPassword) {
+        // 비밀번호 입력 Dialog 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("비밀번호 입력");
+
+        // 입력 필드 추가
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        // 확인 버튼 처리
+        builder.setPositiveButton("확인", (dialog, which) -> {
+            String enteredPassword = input.getText().toString();
+            if (correctPassword.equals(enteredPassword)) {
+//                Intent intent = new Intent(SplashActivity.this, MainHome.class);
+//                startActivity(intent);
+//                finish();// 비밀번호가 일치하면 MainHome으로 이동
+            } else {
+                Toast.makeText(this, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                showPasswordDialog(correctPassword); // 재입력 요청
+            }
+        });
+
+        // 취소 버튼 처리
+        builder.setNegativeButton("취소", (dialog, which) -> {
+            dialog.cancel();
+
+            finishAffinity();
+            System.exit(0); // 앱 종료
+        });
+
+        builder.setCancelable(false); // 다이얼로그 외부 클릭으로 닫히지 않도록 설정
+        builder.show();
     }
 }

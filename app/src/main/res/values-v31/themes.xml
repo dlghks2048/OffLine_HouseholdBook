@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Having themes.xml for v31 variant because @android:dimen/system_app_widget_background_radius
-     and @android:dimen/system_app_widget_internal_padding requires API level 31
-    -->
-    <style name="Theme.OffLine_HouseholdBook.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault.DayNight">
-        <item name="appWidgetRadius">@android:dimen/system_app_widget_background_radius</item>
-        <item name="appWidgetInnerRadius">@android:dimen/system_app_widget_inner_radius</item>
+
+    <style name="Theme.OffLine_HouseholdBook" parent="Theme.MaterialComponents.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.OffLine_HouseholdBook" parent="Theme.Material3.DayNight.NoActionBar">
-    </style>
+    <style name="Theme.App.SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- 배경 색상 -->
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/black</item>
+        <!-- 스플래시 화면 아이콘 -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/household_2</item>
 
-    <style name="Splash.Theme.OffLine_HouseholdBook" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- 기본 테마 -->
-        <item name="android:windowSplashScreenBackground">@color/black</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/household_2</item>
-        <item name="android:windowSplashScreenAnimationDuration">5000</item>
+        <!-- 아이콘 애니메이션 지속 시간 -->
+        <item name="windowSplashScreenAnimationDuration">5000</item>
+
+        <!-- 다음에 적용될 테마-->
         <item name="postSplashScreenTheme">@style/Theme.OffLine_HouseholdBook</item>
     </style>
+
+
+
 
 
 </resources>
