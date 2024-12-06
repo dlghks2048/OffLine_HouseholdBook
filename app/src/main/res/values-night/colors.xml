@@ -10,5 +10,8 @@
     <color name="main_color_green">#5A8B3A</color>
     <color name="main_color_blue">#3A5C8D</color>
 
+    <color name="report_color_red">#A64646</color>
+    <color name="report_color_blue">#405E99</color>
+
     <color name="widget_background">#0246FB</color>
 </resources>
