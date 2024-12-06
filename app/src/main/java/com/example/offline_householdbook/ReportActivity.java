@@ -1,5 +1,7 @@
 package com.example.offline_householdbook;
 
+import static com.example.offline_householdbook.MainHome.getCurrentDate;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -99,19 +101,23 @@ public class ReportActivity extends AppCompatActivity {
         // 현재 날짜를 얻기 위해 Calendar 사용
         Calendar calendar = Calendar.getInstance();
         int currentDay = calendar.get(Calendar.DAY_OF_MONTH); // 오늘 날짜 (1일부터 31일까지)
+        int currentMonth = calendar.get(Calendar.MONTH) + 1; // 현재 월 (0부터 시작하므로 1을 더해줌)
+        int currentYear = calendar.get(Calendar.YEAR); // 현재 년도
 
-        // 시작 날짜는 매월 1일로 설정
-        String startDate = "2024-11-01";  // 월간 시작 날짜 (11월 1일로 고정)
-        String endDate = String.format("2024-11-%02d", currentDay);  // 종료 날짜는 오늘 날짜 (11월 XX일 형식)
+        // 시작 날짜는 매월 1일로 설정 (현재 연도와 월을 사용)
+        String startDate = String.format("%d-%02d-01", currentYear, currentMonth);  // 시작 날짜 (현재 월 1일로 설정)
+
+        // 종료 날짜는 오늘 날짜로 설정
+        String endDate = String.format("%d-%02d-%02d", currentYear, currentMonth, currentDay);  // 종료 날짜는 오늘 날짜 (yyyy-mm-dd 형식)
 
         // 월간 데이터를 getAmountSumForDate를 통해 가져오기
         int totalAmount = 0;
         for (int i = 1; i <= currentDay; i++) {
-            String date = String.format("2024-11-%02d", i);  // 날짜를 "2024-11-01", "2024-11-02" 형식으로 생성
+            // 날짜를 "yyyy-mm-dd" 형식으로 생성 (현재 년도, 월, 일 기준)
+            String date = String.format("%d-%02d-%02d", currentYear, currentMonth, i);  // "2024-11-01", "2024-11-02" 형식
             totalAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
             entries.add(new Entry(i, totalAmount));  // 날짜를 x축, 지출 합계를 y축에 반영
         }
-
         // 데이터셋 생성 및 설정
         LineDataSet dataSet = new LineDataSet(entries, "월간 지출");
         styleDataSet(dataSet);
