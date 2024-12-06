@@ -70,9 +70,6 @@ public class MainHome extends AppCompatActivity {
         SettingButton = findViewById(R.id.btn_settings);
         mainHomeButton = findViewById(R.id.btn_home);
 
-        // DBHelper 인스턴스 생성
-        dbHelper = new DBHelper(getApplicationContext());
-
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,8 +120,6 @@ public class MainHome extends AppCompatActivity {
         TextView wonTextView = findViewById(R.id.won);
         TextView vsTextView = findViewById(R.id.vs);
         TextView useTextView = findViewById(R.id.use);
-
-        DBHelper dbHelper = new DBHelper(getApplicationContext());
 
         // 현재 자산 계산
         ArrayList<FinancialRecord> allRecords = dbHelper.selectFinancialRecordsByDate("1900-01-01", "2100-12-31");
