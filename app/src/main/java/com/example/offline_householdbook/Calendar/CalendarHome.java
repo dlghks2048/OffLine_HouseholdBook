@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,6 +63,23 @@ public class CalendarHome extends AppCompatActivity {
             loadRecordsForSelectedDate(selectedDate);
         });
         calendarView.setDateTextAppearance(R.style.DateTextStyle);
+
+        // 왼쪽 화살표 버튼 가져오기
+        try {
+            Field leftArrowField = MaterialCalendarView.class.getDeclaredField("mPrevButton");
+            Field rightArrowField = MaterialCalendarView.class.getDeclaredField("mNextButton");
+            leftArrowField.setAccessible(true);
+            rightArrowField.setAccessible(true);
+
+            ImageButton leftArrow = (ImageButton) leftArrowField.get(calendarView);
+            ImageButton rightArrow = (ImageButton) rightArrowField.get(calendarView);
+
+            // 화살표 색상 변경
+            leftArrow.setColorFilter(ContextCompat.getColor(this, R.color.textColor));
+            rightArrow.setColorFilter(ContextCompat.getColor(this, R.color.textColor));
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         // 기본 연도 설정 (예: 현재 연도)
         Calendar calendar = Calendar.getInstance();

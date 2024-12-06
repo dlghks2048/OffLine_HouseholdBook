@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,14 +66,30 @@ public class ReportActivity extends AppCompatActivity {
         description.setText("");
         lineChart.setDescription(description);
 
-        btnMonth.setOnClickListener(v -> {
-            showMonthlyGraph();  // 월간 데이터 표시
-            //toggleButtons(true);  // 월간 버튼 활성화, 주간 비활성화
-        });
 
-        btnWeek.setOnClickListener(v -> {
-            showWeeklyGraph();  // 주간 데이터 표시
-            //toggleButtons(false);  // 주간 버튼 활성화, 월간 비활성화
+        // ChipGroup
+        ChipGroup chipGroup = findViewById(R.id.chipGroup);
+        final int[] i = {0};// 0은 주간 1은 월간
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup chipGroup, int checkedId) {
+                if (checkedId == -1) {
+                    if(i[0] == 0)
+                        chipGroup.check(R.id.btn_week);
+                    else
+                        chipGroup.check(R.id.btn_month);
+                }
+
+                if (checkedId == R.id.btn_week) {
+                    // "지출" 선택 시 기존 spinner의 설정 유지
+                    i[0] = 0;
+                    showWeeklyGraph();
+                } else if (checkedId == R.id.btn_month) {
+                    // "수입" 선택 시 spinner 초기화 (아이템 1개만 포함)
+                    i[0] = 1;
+                    showMonthlyGraph();
+                }
+            }
         });
 
         // 시작 시 월간 그래프 표시
@@ -140,8 +157,8 @@ public class ReportActivity extends AppCompatActivity {
 
         // 데이터셋 생성 및 설정
         LineDataSet dataSet = new LineDataSet(entries, "월간 내역"); // 범례 텍스트 설정
-        dataSet.setColor( ContextCompat.getColor(this, R.color.main_color_blue));
-        dataSet.setCircleColor( ContextCompat.getColor(this, R.color.main_color_blue));
+        dataSet.setColor( ContextCompat.getColor(this, R.color.report_color_blue));
+        dataSet.setCircleColor( ContextCompat.getColor(this, R.color.report_color_blue));
         dataSet.setValueTextColor(descriptionTextColor);
 
         LineData lineData = new LineData(dataSet);
@@ -191,8 +208,8 @@ public class ReportActivity extends AppCompatActivity {
 
         // 데이터셋 생성 및 설정
         LineDataSet dataSet = new LineDataSet(entries, "주간 내역");
-        dataSet.setColor( ContextCompat.getColor(this, R.color.main_color_red));
-        dataSet.setCircleColor( ContextCompat.getColor(this, R.color.main_color_red));
+        dataSet.setColor( ContextCompat.getColor(this, R.color.report_color_red));
+        dataSet.setCircleColor( ContextCompat.getColor(this, R.color.report_color_red));
         dataSet.setValueTextColor(descriptionTextColor);
 
 

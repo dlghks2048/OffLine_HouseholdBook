@@ -3,5 +3,12 @@
     <style name="DateTextStyle">
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:colorControlActivated">@color/textColor</item>
     </style>
+
+    <style name="CalendarCustomTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorControlActivated">@color/custom_calender</item>
+        <item name="colorControlNormal">@color/textColor</item>
+    </style>
+
 </resources>

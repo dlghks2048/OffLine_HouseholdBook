@@ -16,7 +16,10 @@
         app:layout_constraintHeight_percent="0.45"
         app:mcv_firstDayOfWeek="sunday"
         app:mcv_selectionMode="single"
-        app:mcv_showOtherDates="none" />
+        app:mcv_showOtherDates="none"
+        android:theme="@style/CalendarCustomTheme"
+        app:mcv_leftArrow="@drawable/custom_left_arrow"
+        app:mcv_rightArrow="@drawable/custom_right_arrow"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/summary_card"
