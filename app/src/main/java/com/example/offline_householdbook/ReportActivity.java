@@ -236,10 +236,4 @@ public class ReportActivity extends AppCompatActivity {
         rightYAxis.setEnabled(false);  // 오른쪽 y축 비활성화 (안 보이게)
     }
 
-
-
-
-
-
-
 }
