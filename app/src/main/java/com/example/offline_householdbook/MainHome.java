@@ -70,6 +70,9 @@ public class MainHome extends AppCompatActivity {
         SettingButton = findViewById(R.id.btn_settings);
         mainHomeButton = findViewById(R.id.btn_home);
 
+        // DBHelper 인스턴스 생성
+        dbHelper = new DBHelper(getApplicationContext());
+
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
