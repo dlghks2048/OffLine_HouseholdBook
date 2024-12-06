@@ -8,9 +8,11 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -23,6 +25,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,17 +49,17 @@ public class ReportActivity extends AppCompatActivity {
 
         btnMonth.setOnClickListener(v -> {
             showMonthlyGraph();  // 월간 데이터 표시
-            toggleButtons(true);  // 월간 버튼 활성화, 주간 비활성화
+            //toggleButtons(true);  // 월간 버튼 활성화, 주간 비활성화
         });
 
         btnWeek.setOnClickListener(v -> {
             showWeeklyGraph();  // 주간 데이터 표시
-            toggleButtons(false);  // 주간 버튼 활성화, 월간 비활성화
+            //toggleButtons(false);  // 주간 버튼 활성화, 월간 비활성화
         });
 
         // 시작 시 월간 그래프 표시
-        showMonthlyGraph();
-        toggleButtons(true);
+        showWeeklyGraph();
+        //toggleButtons(true);
 
         // 버튼 클릭 이벤트 설정
         setupNavigationButtons();
@@ -104,22 +107,19 @@ public class ReportActivity extends AppCompatActivity {
         int currentMonth = calendar.get(Calendar.MONTH) + 1; // 현재 월 (0부터 시작하므로 1을 더해줌)
         int currentYear = calendar.get(Calendar.YEAR); // 현재 년도
 
-        // 시작 날짜는 매월 1일로 설정 (현재 연도와 월을 사용)
-        String startDate = String.format("%d-%02d-01", currentYear, currentMonth);  // 시작 날짜 (현재 월 1일로 설정)
-
-        // 종료 날짜는 오늘 날짜로 설정
-        String endDate = String.format("%d-%02d-%02d", currentYear, currentMonth, currentDay);  // 종료 날짜는 오늘 날짜 (yyyy-mm-dd 형식)
+        int cumulativeAmount = 0;  // 누적 금액을 저장할 변수
 
         // 월간 데이터를 getAmountSumForDate를 통해 가져오기
-        int totalAmount = 0;
         for (int i = 1; i <= currentDay; i++) {
             // 날짜를 "yyyy-mm-dd" 형식으로 생성 (현재 년도, 월, 일 기준)
             String date = String.format("%d-%02d-%02d", currentYear, currentMonth, i);  // "2024-11-01", "2024-11-02" 형식
-            totalAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
-            entries.add(new Entry(i, totalAmount));  // 날짜를 x축, 지출 합계를 y축에 반영
+            int dailyAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
+            cumulativeAmount += dailyAmount;  // 이전까지의 누적 금액에 오늘의 금액을 더함
+            entries.add(new Entry(i, cumulativeAmount));  // 날짜를 x축, 누적 지출을 y축에 반영
         }
+
         // 데이터셋 생성 및 설정
-        LineDataSet dataSet = new LineDataSet(entries, "월간 지출");
+        LineDataSet dataSet = new LineDataSet(entries, "월간 내역");
         styleDataSet(dataSet);
 
         // LineData에 데이터셋 추가
@@ -134,37 +134,33 @@ public class ReportActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
+    // 주간 그래프 표시
     private void showWeeklyGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
 
         // 오늘 날짜를 얻기 위해 Calendar 사용
         Calendar calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH); // 오늘 날짜 (1일부터 31일까지)
         int currentWeekDay = calendar.get(Calendar.DAY_OF_WEEK); // 오늘 요일 (일요일이 1, 월요일이 2, ... 토요일이 7)
 
         // 오늘이 속한 주의 월요일을 계산
         calendar.add(Calendar.DAY_OF_MONTH, -(currentWeekDay - 2));  // 월요일로 설정 (일요일이 1, 월요일이 2 ... 토요일이 7)
-        String startDate = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)); // 월요일 날짜
 
-        // 월요일로부터 6일 후에 일요일을 계산
-        calendar.add(Calendar.DAY_OF_MONTH, 6); // 일요일로 설정
-        String endDate = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)); // 일요일 날짜
+        int cumulativeAmount = 0;  // 누적 금액을 저장할 변수
 
-        // 주간 데이터를 getAmountSumForDate를 통해 가져오기
-        // 월요일부터 일요일까지 반복하여 각 날짜의 지출 합계를 가져옵니다
-        calendar.add(Calendar.DAY_OF_MONTH, -(6)); // 다시 월요일 날짜로 돌아가기
+        // 월요일부터 일요일까지 반복하여 각 날짜의 지출 합계를 누적하여 가져옵니다
         for (int i = 0; i < 7; i++) {
             // 해당 날짜를 가져오기
             String date = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
-            int totalAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
-            entries.add(new Entry(i + 1, totalAmount));  // 날짜를 x축, 지출 합계를 y축에 반영
+            int dailyAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
+            cumulativeAmount += dailyAmount;  // 이전까지의 누적 금액에 오늘의 금액을 더함
+            entries.add(new Entry(i + 1, cumulativeAmount));  // 날짜를 x축, 누적 지출을 y축에 반영
 
             // 날짜를 하루씩 더해가며 반복
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         // 데이터셋 생성 및 설정
-        LineDataSet dataSet = new LineDataSet(entries, "주간 지출");
+        LineDataSet dataSet = new LineDataSet(entries, "주간 내역");
         styleDataSet(dataSet);
 
         // LineData에 데이터셋 추가
@@ -181,12 +177,11 @@ public class ReportActivity extends AppCompatActivity {
 
 
 
-
     // 월간 그래프 색상 변경
     private void styleDataSet(LineDataSet dataSet) {
         dataSet.setDrawValues(false);  // 값 라벨 숨기기
         dataSet.setDrawIcons(false);  // 아이콘 숨기기
-        if (dataSet.getLabel().equals("월간 지출")) {
+        if (dataSet.getLabel().equals("월간 내역")) {
             dataSet.setColor(Color.rgb(0, 0, 255));  // 월간 그래프는 파란색으로 설정
             dataSet.setCircleColor(Color.rgb(0, 0, 255));
         } else {
@@ -241,14 +236,10 @@ public class ReportActivity extends AppCompatActivity {
         rightYAxis.setEnabled(false);  // 오른쪽 y축 비활성화 (안 보이게)
     }
 
-    // 월간/주간 버튼 활성화 처리
-    private void toggleButtons(boolean isMonth) {
-        if (isMonth) {
-            btnMonth.setEnabled(false);
-            btnWeek.setEnabled(true);
-        } else {
-            btnMonth.setEnabled(true);
-            btnWeek.setEnabled(false);
-        }
-    }
+
+
+
+
+
+
 }
