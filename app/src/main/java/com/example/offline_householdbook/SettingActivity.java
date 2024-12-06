@@ -102,17 +102,4 @@ public class SettingActivity extends AppCompatActivity {
         builder.setCancelable(false); // 다이얼로그 외부 클릭으로 닫히지 않도록 설정
         builder.show();
     }
-
-    public void setDarkMode(View view) {
-        int curDarkMode = dbHelper.selectSettingDarkMode();
-        if (curDarkMode == 0) {
-            // 다크모드로 설정
-            dbHelper.updateSettingDarkMode(1);
-
-        }
-        else {
-            // 다크모드 해제
-            dbHelper.updateSettingDarkMode(0);
-        }
-    }
 }

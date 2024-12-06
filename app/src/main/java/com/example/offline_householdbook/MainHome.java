@@ -216,7 +216,7 @@ public class MainHome extends AppCompatActivity {
         Spinner spinner = bottomSheetView.findViewById(R.id.CategorySpin);
         //처음에 초기화가 필요, 지출 상태로 초기화
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                R.array.expense_spinner_items, android.R.layout.simple_spinner_item);
+                R.array.expense_spinner_items, R.layout.spiner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -236,7 +236,7 @@ public class MainHome extends AppCompatActivity {
                     // "지출" 선택 시 기존 spinner의 설정 유지
                     i[0] = 0;
                     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                            R.array.expense_spinner_items, android.R.layout.simple_spinner_item);
+                            R.array.expense_spinner_items, R.layout.spiner_item);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(adapter);
                 } else if (checkedId == R.id.chipIncome) {
@@ -244,7 +244,7 @@ public class MainHome extends AppCompatActivity {
                     i[0] = 1;
                     chipGroup.check(R.id.chipIncome);
                     ArrayAdapter<CharSequence> incomeAdapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                            R.array.income_spinner_items, android.R.layout.simple_spinner_item);
+                            R.array.income_spinner_items, R.layout.spiner_item);
                     incomeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(incomeAdapter);
                 }

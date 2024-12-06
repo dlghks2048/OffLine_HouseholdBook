@@ -52,8 +52,10 @@ public class FinancialRecordAdapter extends RecyclerView.Adapter<FinancialRecord
         holder.tvAmount.setText("₩ " + amount);
 
         // amount가 양수면 파란색, 음수면 빨간색으로 설정
-        if (amount >= 0) {
+        if (amount > 0) {
             holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_blue_dark));
+        } else if(amount == 0){
+            holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.textColor));
         } else {
             holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_red_dark));
         }

@@ -2,6 +2,7 @@ package com.example.offline_householdbook.Calendar;
 
 import static com.example.offline_householdbook.MainHome.getCurrentDate;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,11 +28,13 @@ import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.ChipGroup;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,7 +45,7 @@ public class CalendarHome extends AppCompatActivity {
     private FinancialRecordAdapter adapter;
     private DBHelper dbHelper;
     private TextView textView;
-
+    private int currentYear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +60,12 @@ public class CalendarHome extends AppCompatActivity {
             String selectedDate = date.getDate().toString();  // 날짜를 "yyyy-MM-dd" 형식으로 변환
             loadRecordsForSelectedDate(selectedDate);
         });
-        // 메서드 이름은 sql문+테이블이름(+~)
-//        // insertFinancialRecord는 FinancialRecord객체를 생성하여 전달하면 됨
-//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-14", "문구", 10000, "메모"));
-//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-13", "교통", -10000, "메모"));
-//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-12", "취미", -10000, "메모"));
-//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-11", "외식", 10000, "메모"));
-//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-10", "게임", -10000, "메모"));
-//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
+        calendarView.setDateTextAppearance(R.style.DateTextStyle);
+
+        // 기본 연도 설정 (예: 현재 연도)
+        Calendar calendar = Calendar.getInstance();
+        currentYear = calendar.get(Calendar.YEAR);
+
 
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = findViewById(R.id.recyclerView);
@@ -82,6 +84,7 @@ public class CalendarHome extends AppCompatActivity {
             }
         });
 
+
         recyclerView.setAdapter(adapter);
 
         textView = findViewById(R.id.res_txt); // TextView 초기화
@@ -90,7 +93,6 @@ public class CalendarHome extends AppCompatActivity {
         findViewById(R.id.imageView_Insert).setOnClickListener(v -> showBottomSheetDialog());
 
         updateCalendarDecorators();
-        calendarView.addDecorator(new CombinedDecorator(dbHelper, getCurrentDate()));
     }
 
     private void loadRecordsForSelectedDate(String date) {
@@ -105,9 +107,14 @@ public class CalendarHome extends AppCompatActivity {
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("ko", "KR"));
         String formattedAmount = formatter.format(totalAmount);
         textView.setText(totalAmount >= 0 ? "+" + formattedAmount : formattedAmount);
-        textView.setTextColor(getResources().getColor(
-                totalAmount >= 0 ? android.R.color.holo_blue_dark : android.R.color.holo_red_dark
-        ));
+        if(totalAmount > 0){
+            textView.setTextColor(ContextCompat.getColor(this, R.color.positive_text_color));
+        }else if (totalAmount == 0){
+            textView.setTextColor(ContextCompat.getColor(this, R.color.textColor));
+        }else {
+            textView.setTextColor(ContextCompat.getColor(this, R.color.negative_text_color));
+        }
+
 
         // 어댑터 데이터 업데이트
         adapter.updateData(records);
@@ -125,7 +132,7 @@ public class CalendarHome extends AppCompatActivity {
         Spinner spinner = bottomSheetView.findViewById(R.id.CategorySpin);
         //처음에 초기화가 필요, 지출 상태로 초기화
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                R.array.expense_spinner_items, android.R.layout.simple_spinner_item);
+                R.array.expense_spinner_items, R.layout.spiner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -145,7 +152,7 @@ public class CalendarHome extends AppCompatActivity {
                     // "지출" 선택 시 기존 spinner의 설정 유지
                     i[0] = 0;
                     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                            R.array.expense_spinner_items, android.R.layout.simple_spinner_item);
+                            R.array.expense_spinner_items, R.layout.spiner_item);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(adapter);
                 } else if (checkedId == R.id.chipIncome) {
@@ -153,7 +160,7 @@ public class CalendarHome extends AppCompatActivity {
                     i[0] = 1;
                     chipGroup.check(R.id.chipIncome);
                     ArrayAdapter<CharSequence> incomeAdapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                            R.array.income_spinner_items, android.R.layout.simple_spinner_item);
+                            R.array.income_spinner_items, R.layout.spiner_item);
                     incomeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(incomeAdapter);
                 }
@@ -207,6 +214,7 @@ public class CalendarHome extends AppCompatActivity {
             FinancialRecord record = new FinancialRecord(date, category, money, memo);
             dbHelper.insertFinancialRecord(record);
 
+            //리사이클 뷰 갱신
             loadRecordsForSelectedDate(date);
             // 캘린더 데코레이터 갱신
             updateCalendarDecorators();
@@ -278,13 +286,19 @@ public class CalendarHome extends AppCompatActivity {
     }
 
     private void updateCalendarDecorators() {
-        calendarView.removeDecorators(); // 기존 데코레이터 제거
-
         ArrayList<String> allDates = dbHelper.getAllDates(); // DB의 모든 날짜 가져오기
+        ArrayList<DayViewDecorator> newDecorators = new ArrayList<>();
+
+        // 기존에 추가된 데코레이터들을 추적
         for (String date : allDates) {
-            // CombinedDecorator를 이용해 날짜 꾸미기
-            calendarView.addDecorator(new CombinedDecorator(dbHelper, date));
+            // 이미 존재하는 데코레이터는 다시 추가하지 않음
+            CombinedDecorator newDecorator = new CombinedDecorator(dbHelper, date, this);
+            newDecorators.add(newDecorator);
+        }
+
+        // 새로운 데코레이터 적용
+        for (DayViewDecorator decorator : newDecorators) {
+            calendarView.addDecorator(decorator);
         }
     }
-
 }

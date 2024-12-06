@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="textColor">#FF000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_blue_50">#FFE1F5FE</color>
@@ -11,4 +12,10 @@
     <color name="category_text">#505050</color>
     <color name="amount_expense">#FF5151</color>
     <color name="bright_background_color">#F5F5F5</color>
+    <color name="positive_text_color">#1E88E5</color> <!-- 파란색 -->
+    <color name="neutral_text_color">#000000</color> <!-- 기본 텍스트 색상 -->
+    <color name="negative_text_color">#D32F2F</color> <!-- 빨간색 -->
+    <color name="main_color_red">#F4D4D4</color> <!-- 빨간색 -->
+    <color name="main_color_green">#E2FAAF</color> <!-- 초록색? -->
+    <color name="main_color_blue">#B5CBF6</color> <!-- 파란색 -->
 </resources>

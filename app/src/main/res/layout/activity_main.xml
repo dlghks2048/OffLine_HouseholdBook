@@ -22,7 +22,7 @@
             android:id="@+id/money"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#B5CBF6"
+            android:background="@color/main_color_blue"
             android:gravity="center"
             android:text="현재 내 자산"
             android:textSize="25dp" />
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:background="#B5CBF6"
+            android:background="@color/main_color_blue"
             android:gravity="center"
             android:text="5,000,000원"
             android:textSize="20dp" />
@@ -41,7 +41,7 @@
             android:id="@+id/vs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#E2FAAF"
+            android:background="@color/main_color_green"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F4D4D4"
+            android:background="@color/main_color_red"
             android:gravity="center"
             android:text="이번 달에 쓴 돈"
             android:textSize="25dp" />
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="2,500,000원"
-            android:background="#F4D4D4"
+            android:background="@color/main_color_red"
             android:textStyle="bold"
             android:textSize="20dp" />
 

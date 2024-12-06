@@ -9,4 +9,10 @@
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+
+    <!-- Date text style -->
+    <style name="DateTextStyle">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

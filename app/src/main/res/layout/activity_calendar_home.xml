@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="일일 합계"
                 android:textSize="14sp"
-                android:textColor="#666666"
+                android:textColor="@color/textColor"
                 android:layout_marginBottom="2dp"/>
 
             <TextView
@@ -49,6 +49,7 @@
                 android:text="₩ 0"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:textColor="@color/textColor"
                 android:fontFamily="sans-serif-medium"
                 android:letterSpacing="0.05"
                 android:includeFontPadding="false"/>
