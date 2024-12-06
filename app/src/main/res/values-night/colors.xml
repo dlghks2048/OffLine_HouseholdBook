@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="textColor">#FFFFFFFF</color>
+    <!-- 다크 모드 텍스트 색상 -->
+    <color name="positive_text_color">#90CAF9</color> <!-- 밝은 파란색 -->
+    <color name="neutral_text_color">#FFFFFF</color> <!-- 흰색 -->
+    <color name="negative_text_color">#EF5350</color> <!-- 밝은 빨간색 -->
+
+    <color name="main_color_red">#9C4B4B</color>
+    <color name="main_color_green">#5A8B3A</color>
+    <color name="main_color_blue">#3A5C8D</color>
+</resources>
