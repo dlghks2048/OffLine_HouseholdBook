@@ -86,6 +86,7 @@ public class MainHome extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ReportActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -94,6 +95,7 @@ public class MainHome extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
