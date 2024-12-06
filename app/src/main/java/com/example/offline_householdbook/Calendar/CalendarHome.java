@@ -56,17 +56,14 @@ public class CalendarHome extends AppCompatActivity {
             String selectedDate = date.getDate().toString();  // 날짜를 "yyyy-MM-dd" 형식으로 변환
             loadRecordsForSelectedDate(selectedDate);
         });
-
-        // DBHelper 객체 생성, 생성자 인수는 현재 컨텍스트
-        DBHelper db = new DBHelper(getApplicationContext());
         // 메서드 이름은 sql문+테이블이름(+~)
 //        // insertFinancialRecord는 FinancialRecord객체를 생성하여 전달하면 됨
-//        db.insertFinancialRecord(new FinancialRecord("2024-11-14", "문구", 10000, "메모"));
-//        db.insertFinancialRecord(new FinancialRecord("2024-11-13", "교통", -10000, "메모"));
-//        db.insertFinancialRecord(new FinancialRecord("2024-11-12", "취미", -10000, "메모"));
-//        db.insertFinancialRecord(new FinancialRecord("2024-11-11", "외식", 10000, "메모"));
-//        db.insertFinancialRecord(new FinancialRecord("2024-11-10", "게임", -10000, "메모"));
-//        db.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
+//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-14", "문구", 10000, "메모"));
+//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-13", "교통", -10000, "메모"));
+//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-12", "취미", -10000, "메모"));
+//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-11", "외식", 10000, "메모"));
+//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-10", "게임", -10000, "메모"));
+//        dbHelper.insertFinancialRecord(new FinancialRecord("2024-11-15", "휴가", 10000, "메모"));
 
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = findViewById(R.id.recyclerView);
