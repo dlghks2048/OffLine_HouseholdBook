@@ -1,8 +1,6 @@
 package com.example.offline_householdbook;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -28,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
 
         if (password == null || password.isEmpty()) {
             // 비밀번호가 없을 경우 바로 MainHome으로 이동
-            startActivity(new Intent(this, MainHome.class));
             finish(); // SplashActivity를 종료하여 백스택 제거
         } else {
             // 비밀번호가 설정되어 있으면 다이얼로그 표시

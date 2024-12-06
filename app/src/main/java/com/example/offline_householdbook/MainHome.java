@@ -1,8 +1,5 @@
 package com.example.offline_householdbook;
 
-import static com.example.offline_householdbook.ReportWidget.updateAppWidget;
-import static java.security.AccessController.getContext;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
@@ -14,7 +11,6 @@ import android.graphics.LightingColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,15 +35,13 @@ import com.example.offline_householdbook.Calendar.CalendarHome;
 import com.example.offline_householdbook.db.DBHelper;
 import com.example.offline_householdbook.db.FinancialRecord;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.*;
 
 public class MainHome extends AppCompatActivity {
     ImageButton CalendarButton, ReportButton, SettingButton, mainHomeButton;
@@ -55,9 +49,9 @@ public class MainHome extends AppCompatActivity {
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Intent intent = new Intent(this, SplashActivity.class);
         startActivity(intent);
-        super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -92,7 +86,6 @@ public class MainHome extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ReportActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -101,7 +94,6 @@ public class MainHome extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
