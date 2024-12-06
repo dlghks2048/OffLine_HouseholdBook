@@ -43,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:onClick="setDarkMode"
         android:text="테마 설정"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/copyright"

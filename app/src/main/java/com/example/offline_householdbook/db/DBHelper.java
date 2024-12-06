@@ -115,6 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         int curBalance = selectSettingBalance();
         updateSettingBalance(curBalance + record.getAmount());
     }
+
     // _id로 조회
     private FinancialRecord selectFinancialRecordsById(int id) {
         String query = "SELECT * FROM " + FinancialRecordTable.TABLE_NAME +
