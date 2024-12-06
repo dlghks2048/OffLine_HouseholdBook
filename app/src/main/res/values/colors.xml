@@ -18,4 +18,7 @@
     <color name="main_color_red">#F4D4D4</color> <!-- 빨간색 -->
     <color name="main_color_green">#E2FAAF</color> <!-- 초록색? -->
     <color name="main_color_blue">#B5CBF6</color> <!-- 파란색 -->
+    <color name="widget_background">#91B0FF</color>
+    <color name="whastiscolor">#FFA1B4DC</color>
+
 </resources>

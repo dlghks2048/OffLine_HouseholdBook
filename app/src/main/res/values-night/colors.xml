@@ -9,4 +9,6 @@
     <color name="main_color_red">#9C4B4B</color>
     <color name="main_color_green">#5A8B3A</color>
     <color name="main_color_blue">#3A5C8D</color>
+
+    <color name="widget_background">#0246FB</color>
 </resources>

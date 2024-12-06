@@ -21,8 +21,6 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,12 +31,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
-import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -53,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 @SuppressLint("MissingInflatedId")
 public class MainHome extends AppCompatActivity {
@@ -118,6 +113,7 @@ public class MainHome extends AppCompatActivity {
         SettingButton = findViewById(R.id.btn_settings);
         mainHomeButton = findViewById(R.id.btn_home);
 
+        widgetUpdate();
 
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,16 +304,7 @@ public class MainHome extends AppCompatActivity {
             updateTextViews();
 
             //위젯 업데이트 함수 호출
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
-
-            // 특정 위젯 프로바이더의 위젯 ID 가져오기
-            ComponentName widgetComponent = new ComponentName(getApplicationContext(), ReportWidget.class);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent);
-
-            // 각 위젯 ID를 이용해 updateAppWidget 호출
-            for (int appWidgetId : appWidgetIds) {
-                ReportWidget.updateAppWidget(getApplicationContext(), appWidgetManager, appWidgetId);
-            }
+            widgetUpdate();
             // 바텀 시트 닫기
             bottomSheetDialog.dismiss();
         });
@@ -455,5 +442,19 @@ public class MainHome extends AppCompatActivity {
 
         builder.setCancelable(false); // 다이얼로그 외부 클릭으로 닫히지 않도록 설정
         builder.show();
+    }
+
+    private void widgetUpdate() {
+        //위젯 업데이트 함수 호출
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+
+        // 특정 위젯 프로바이더의 위젯 ID 가져오기
+        ComponentName widgetComponent = new ComponentName(getApplicationContext(), ReportWidget.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent);
+
+        // 각 위젯 ID를 이용해 updateAppWidget 호출
+        for (int appWidgetId : appWidgetIds) {
+            ReportWidget.updateAppWidget(getApplicationContext(), appWidgetManager, appWidgetId);
+        }
     }
 }

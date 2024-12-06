@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +20,8 @@ import androidx.core.content.ContextCompat;
 import com.example.offline_householdbook.Calendar.CalendarHome;
 import com.example.offline_householdbook.db.DBHelper;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -46,6 +49,21 @@ public class ReportActivity extends AppCompatActivity {
         btnWeek = findViewById(R.id.btn_week);
 
         databaseHelper = new DBHelper(this);
+
+        //라인 차트 택스트 색상 설정
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextColor(ContextCompat.getColor(this, R.color.textColor));
+        xAxis.enableGridDashedLine(8, 24, 0);
+        YAxis yLAxis = lineChart.getAxisLeft();
+        yLAxis.setTextColor(ContextCompat.getColor(this, R.color.textColor));
+
+        Legend legend = lineChart.getLegend();
+        legend.setEnabled(true);
+
+        Description description = new Description();
+        description.setText("");
+        lineChart.setDescription(description);
 
         btnMonth.setOnClickListener(v -> {
             showMonthlyGraph();  // 월간 데이터 표시
@@ -97,8 +115,10 @@ public class ReportActivity extends AppCompatActivity {
         ReportButton.setImageDrawable(drawable);
     }
 
-    // 월간 그래프 표시
     private void showMonthlyGraph() {
+        // 다크모드와 일반모드에 맞게 색상 설정
+        int descriptionTextColor = ContextCompat.getColor(this, R.color.textColor); // 설명 텍스트 색상
+
         ArrayList<Entry> entries = new ArrayList<>();
 
         // 현재 날짜를 얻기 위해 Calendar 사용
@@ -111,31 +131,41 @@ public class ReportActivity extends AppCompatActivity {
 
         // 월간 데이터를 getAmountSumForDate를 통해 가져오기
         for (int i = 1; i <= currentDay; i++) {
-            // 날짜를 "yyyy-mm-dd" 형식으로 생성 (현재 년도, 월, 일 기준)
-            String date = String.format("%d-%02d-%02d", currentYear, currentMonth, i);  // "2024-11-01", "2024-11-02" 형식
-            int dailyAmount = databaseHelper.getAmountSumForDate(date);  // 해당 날짜의 지출 합계를 가져옴
-            cumulativeAmount += dailyAmount;  // 이전까지의 누적 금액에 오늘의 금액을 더함
-            entries.add(new Entry(i, cumulativeAmount));  // 날짜를 x축, 누적 지출을 y축에 반영
+            // 날짜를 "yyyy-mm-dd" 형식으로 생성
+            String date = String.format("%d-%02d-%02d", currentYear, currentMonth, i);
+            int dailyAmount = databaseHelper.getAmountSumForDate(date);
+            cumulativeAmount += dailyAmount;
+            entries.add(new Entry(i, cumulativeAmount));
         }
 
         // 데이터셋 생성 및 설정
-        LineDataSet dataSet = new LineDataSet(entries, "월간 내역");
-        styleDataSet(dataSet);
+        LineDataSet dataSet = new LineDataSet(entries, "월간 내역"); // 범례 텍스트 설정
+        dataSet.setColor( ContextCompat.getColor(this, R.color.main_color_blue));
+        dataSet.setCircleColor( ContextCompat.getColor(this, R.color.main_color_blue));
+        dataSet.setValueTextColor(descriptionTextColor);
 
-        // LineData에 데이터셋 추가
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
 
-        // X축, Y축 설정
-        setXAxisForMonthly(currentDay); // 오늘 날짜를 기준으로 x축 설정
-        setYAxis();
+        // 범례 텍스트 색상 설정
+        Legend legend = lineChart.getLegend();
+        legend.setTextColor(descriptionTextColor); // 범례 텍스트 색상을 descriptionTextColor로 변경
+
+        //현재 날자까지 설정
+        setXAxisForMonthly(currentDay);
 
         // 그래프 갱신
         lineChart.invalidate();
     }
 
+
+
+
+
     // 주간 그래프 표시
     private void showWeeklyGraph() {
+        // 다크모드와 일반모드에 맞게 색상 설정
+        int descriptionTextColor = ContextCompat.getColor(this, R.color.textColor); // 설명 텍스트 색상
         ArrayList<Entry> entries = new ArrayList<>();
 
         // 오늘 날짜를 얻기 위해 Calendar 사용
@@ -161,11 +191,19 @@ public class ReportActivity extends AppCompatActivity {
 
         // 데이터셋 생성 및 설정
         LineDataSet dataSet = new LineDataSet(entries, "주간 내역");
-        styleDataSet(dataSet);
+        dataSet.setColor( ContextCompat.getColor(this, R.color.main_color_red));
+        dataSet.setCircleColor( ContextCompat.getColor(this, R.color.main_color_red));
+        dataSet.setValueTextColor(descriptionTextColor);
+
 
         // LineData에 데이터셋 추가
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
+
+
+        // 범례 텍스트 색상 설정
+        Legend legend = lineChart.getLegend();
+        legend.setTextColor(descriptionTextColor); // 범례 텍스트 색상을 descriptionTextColor로 변경
 
         // X축, Y축 설정
         setXAxisForWeekly();  // 주간 그래프용 X축 설정
