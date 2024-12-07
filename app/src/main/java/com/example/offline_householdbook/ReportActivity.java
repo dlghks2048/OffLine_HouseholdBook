@@ -67,7 +67,7 @@ public class ReportActivity extends AppCompatActivity {
         currentYear = calendar.get(Calendar.YEAR); // 현재 년도
         currentWeekDay = calendar.get(Calendar.DAY_OF_WEEK); // 오늘 요일 (일요일이 1, 월요일이 2, ... 토요일이 7)
         Log.d(TAG,String.format("초기 날자 : %04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
-        iscurrentday = true;
+        iscurrentday = false;
         lineChart = findViewById(R.id.lineChart);
         btnMonth = findViewById(R.id.btn_month);
         btnWeek = findViewById(R.id.btn_week);
@@ -107,6 +107,7 @@ public class ReportActivity extends AppCompatActivity {
                     // "지출" 선택 시 기존 spinner의 설정 유지
                     i[0] = 0;
                     initiallize();
+                    iscurrentday = false; // 이건 좀 꼬여있어서 설정해주는 것
                     showWeeklyGraph();isMonthlyView = false;
                 } else if (checkedId == R.id.btn_month) {
                     // "수입" 선택 시 spinner 초기화 (아이템 1개만 포함)
