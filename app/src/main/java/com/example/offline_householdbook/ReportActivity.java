@@ -112,7 +112,7 @@ public class ReportActivity extends AppCompatActivity {
                     // "수입" 선택 시 spinner 초기화 (아이템 1개만 포함)
                     i[0] = 1;
                     initiallize();
-                    iscurrentday = true;
+                    iscurrentday = !iscurrentday;
                     showMonthlyGraph();isMonthlyView = true;
                 }
             }
